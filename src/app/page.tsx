@@ -1,4 +1,9 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 const fiturUtama = [
   {
@@ -43,14 +48,20 @@ export default function Home() {
             <a href="#metode" className="transition-colors hover:text-emerald-600">
               Metode
             </a>
-            <a
+            <Link
               href="https://github.com/univdin/qalbi-tahfidz"
               className="transition-colors hover:text-emerald-600"
               target="_blank"
               rel="noopener noreferrer"
             >
               Repositori
-            </a>
+            </Link>
+            <Link
+              href="/auth/login"
+              className="rounded-full bg-emerald-600 px-4 py-1.5 font-semibold text-white transition-colors hover:bg-emerald-700"
+            >
+              Masuk
+            </Link>
           </nav>
         </div>
       </header>
@@ -69,12 +80,12 @@ export default function Home() {
             anak usia 5–15 tahun serta keluarga.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <a
-              href="#fitur"
+            <Link
+              href="/reader"
               className="flex h-12 items-center justify-center rounded-full bg-emerald-600 px-6 font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700"
             >
               Mulai Menghafal
-            </a>
+            </Link>
             <a
               href="#metode"
               className="flex h-12 items-center justify-center rounded-full border border-zinc-300 px-6 font-semibold text-zinc-900 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-50 dark:hover:bg-zinc-900"

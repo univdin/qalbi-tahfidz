@@ -1,7 +1,9 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
-export const metadata = {
-  title: "Offline",
+export const metadata: Metadata = {
+  title: "Offline — QalbiTahfidz",
+  robots: { index: false, follow: false },
 };
 
 export default function OfflinePage() {

@@ -1,7 +1,11 @@
+import type { Metadata } from "next";
 import { SrsDeck } from "@/components/deck/SrsDeck";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "SRS Deck — QalbiTahfidz",
+  description:
+    "Jadwal ulangan berjarak (FSRS) untuk Sabaq, Sabqi & Manzil hafalan Al-Qur'anmu.",
+  robots: { index: false, follow: false },
 };
 
 export default function DeckPage() {

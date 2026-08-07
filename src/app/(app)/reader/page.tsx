@@ -1,16 +1,56 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { SURAHS } from "@/lib/surahs";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Card, CardContent } from "@/components/ui/card";
+import { absoluteUrl, SITE_URL } from "@/lib/site";
+import { SURAHS } from "@/lib/surahs";
 
 const JUZ_30_START = 78;
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Pilih Surah — QalbiTahfidz",
+  description:
+    "Daftar 114 surah Al-Qur'an untuk dibaca dan dihafal anak: mulai dari Juz Amma (Juz 30) atau pilih surah lain. Audio per ayat, mushaf Uthmani/IndoPak, dan terjemahan Indonesia.",
+  alternates: { canonical: "/reader" },
+  openGraph: {
+    type: "website",
+    url: `${SITE_URL}/reader`,
+    title: "Pilih Surah — QalbiTahfidz",
+    description:
+      "Daftar 114 surah Al-Qur'an untuk dibaca dan dihafal anak dengan Metode Ummi, Tikrar, dan FSRS.",
+  },
 };
 
 export default function ReaderIndexPage() {
   const juz30 = SURAHS.filter((s) => s.number >= JUZ_30_START);
   const lainnya = SURAHS.filter((s) => s.number < JUZ_30_START);
+
+  const jsonLdBreadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Beranda", item: SITE_URL },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Pilih Surah",
+        item: absoluteUrl("/reader"),
+      },
+    ],
+  };
+
+  const jsonLdItemList = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Daftar Surah Al-Qur'an",
+    itemListElement: SURAHS.map((s, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: `Surah ${s.nameId} (${s.nameArabic})`,
+      description: `${s.ayahCount} ayat, diturunkan di ${s.revelation}`,
+      url: absoluteUrl(`/reader/${s.number}`),
+    })),
+  };
 
   const renderGrid = (list: typeof SURAHS) => (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -38,6 +78,9 @@ export default function ReaderIndexPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-6 py-8">
+      <JsonLd data={jsonLdBreadcrumb} />
+      <JsonLd data={jsonLdItemList} />
+
       <div>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
           Pilih Surah

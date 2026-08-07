@@ -1,8 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { AuthForm } from "@/components/auth/AuthForm";
 
-export const metadata = {
-  title: "Masuk",
+export const metadata: Metadata = {
+  title: "Masuk — QalbiTahfidz",
+  description:
+    "Masuk ke akun QalbiTahfidz untuk memulai atau melanjutkan hafalan Al-Qur'an anak.",
+  robots: { index: false, follow: false },
 };
 
 export default function LoginPage() {

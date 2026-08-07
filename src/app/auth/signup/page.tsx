@@ -1,8 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { AuthForm } from "@/components/auth/AuthForm";
 
-export const metadata = {
-  title: "Daftar",
+export const metadata: Metadata = {
+  title: "Daftar — QalbiTahfidz",
+  description:
+    "Buat akun QalbiTahfidz untuk memulai hafalan Al-Qur'an anak dengan Metode Ummi, Tikrar, dan FSRS.",
+  robots: { index: false, follow: false },
 };
 
 export default function SignupPage() {
