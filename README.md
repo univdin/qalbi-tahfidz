@@ -29,7 +29,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 
 ## Dokumentasi
 
-Spesifikasi lengkap & playbook ada di repo [DOCIFY → `docs/quran/`](https://github.com/univdin/docify/tree/main/docs/quran): BRD/PRD, arsitektur, database + RLS, registry sumber terbuka terverifikasi, backend, frontend (UI/UX modul), dan CI/CD.
+Spesifikasi lengkap & playbook ada di repo ini: **`agents/`** (README index, `master.md` single source of truth, `01-brd-prd` … `10-research-tahfidz`). Untuk agent AI, baca `AGENTS.md` dan `.agents/skills/quran-tahfidz/SKILL.md`.
 
 ## Sumber Data Terverifikasi
 
