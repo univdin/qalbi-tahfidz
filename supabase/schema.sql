@@ -107,7 +107,7 @@ BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SET search_path = public;
 
 DROP TRIGGER IF EXISTS trg_profiles_updated ON public.profiles;
 CREATE TRIGGER trg_profiles_updated
@@ -124,76 +124,78 @@ ALTER TABLE public.user_collections ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.hafalan_mistake_logs ENABLE ROW LEVEL SECURITY;
 
 -- Profiles
-CREATE POLICY "Users can read own profile"
-  ON public.profiles FOR SELECT USING (auth.uid() = id);
-
-CREATE POLICY "Parents and Teachers can read linked child profile"
+CREATE POLICY "Users can read own or linked child profile"
   ON public.profiles FOR SELECT USING (
-    EXISTS (
+    (select auth.uid()) = id
+    OR EXISTS (
       SELECT 1 FROM public.parent_child_links
-      WHERE parent_id = auth.uid() AND child_id = public.profiles.id
+      WHERE parent_id = (select auth.uid()) AND child_id = public.profiles.id
     )
   );
 
 CREATE POLICY "Users can update own profile"
-  ON public.profiles FOR UPDATE USING (auth.uid() = id);
+  ON public.profiles FOR UPDATE USING ((select auth.uid()) = id);
 
 CREATE POLICY "Users can insert own profile"
-  ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
+  ON public.profiles FOR INSERT WITH CHECK ((select auth.uid()) = id);
 
 -- Parent Child Links
 CREATE POLICY "Parents and Teachers can manage links"
-  ON public.parent_child_links FOR ALL USING (auth.uid() = parent_id);
+  ON public.parent_child_links FOR ALL USING ((select auth.uid()) = parent_id);
 
--- Hifz Cards
-CREATE POLICY "Users can view own hifz cards"
-  ON public.hifz_cards FOR SELECT USING (auth.uid() = user_id);
-
+-- Hifz Cards (SELECT own tercakup policy ALL own)
 CREATE POLICY "Guardians can view linked child hifz cards"
   ON public.hifz_cards FOR SELECT USING (
     EXISTS (
       SELECT 1 FROM public.parent_child_links
-      WHERE parent_id = auth.uid() AND child_id = public.hifz_cards.user_id
+      WHERE parent_id = (select auth.uid()) AND child_id = public.hifz_cards.user_id
     )
   );
 
 CREATE POLICY "Users can manage own hifz cards"
-  ON public.hifz_cards FOR ALL USING (auth.uid() = user_id);
+  ON public.hifz_cards FOR ALL USING ((select auth.uid()) = user_id);
 
 -- Review Logs
-CREATE POLICY "Users can view own review logs"
-  ON public.review_logs FOR SELECT USING (auth.uid() = user_id);
-
-CREATE POLICY "Guardians can view linked child review logs"
+CREATE POLICY "Users can view own or linked child review logs"
   ON public.review_logs FOR SELECT USING (
-    EXISTS (
+    (select auth.uid()) = user_id
+    OR EXISTS (
       SELECT 1 FROM public.parent_child_links
-      WHERE parent_id = auth.uid() AND child_id = public.review_logs.user_id
+      WHERE parent_id = (select auth.uid()) AND child_id = public.review_logs.user_id
     )
   );
 
 CREATE POLICY "Users can insert own review logs"
-  ON public.review_logs FOR INSERT WITH CHECK (auth.uid() = user_id);
+  ON public.review_logs FOR INSERT WITH CHECK ((select auth.uid()) = user_id);
 
 -- Streaks
 CREATE POLICY "Users can manage own streaks"
-  ON public.user_streaks FOR ALL USING (auth.uid() = user_id);
+  ON public.user_streaks FOR ALL USING ((select auth.uid()) = user_id);
 
 CREATE POLICY "Guardians can view linked child streaks"
   ON public.user_streaks FOR SELECT USING (
     EXISTS (
       SELECT 1 FROM public.parent_child_links
-      WHERE parent_id = auth.uid() AND child_id = public.user_streaks.user_id
+      WHERE parent_id = (select auth.uid()) AND child_id = public.user_streaks.user_id
     )
   );
 
 -- Collections & Notes
 CREATE POLICY "Users can manage own collections"
-  ON public.user_collections FOR ALL USING (auth.uid() = user_id);
+  ON public.user_collections FOR ALL USING ((select auth.uid()) = user_id);
 
 -- Mistake Logs
 CREATE POLICY "Users can manage own mistake logs"
-  ON public.hafalan_mistake_logs FOR ALL USING (auth.uid() = user_id);
+  ON public.hafalan_mistake_logs FOR ALL USING ((select auth.uid()) = user_id);
+
+-- Index kolom FK (unindexed_foreign_keys)
+CREATE INDEX IF NOT EXISTS idx_hifz_cards_user_id ON public.hifz_cards(user_id);
+CREATE INDEX IF NOT EXISTS idx_review_logs_user_id ON public.review_logs(user_id);
+CREATE INDEX IF NOT EXISTS idx_review_logs_card_id ON public.review_logs(card_id);
+CREATE INDEX IF NOT EXISTS idx_parent_child_links_parent_id ON public.parent_child_links(parent_id);
+CREATE INDEX IF NOT EXISTS idx_parent_child_links_child_id ON public.parent_child_links(child_id);
+CREATE INDEX IF NOT EXISTS idx_user_collections_user_id ON public.user_collections(user_id);
+CREATE INDEX IF NOT EXISTS idx_hafalan_mistake_logs_user_id ON public.hafalan_mistake_logs(user_id);
 
 -- 8. Auto-create profile & user_streaks on signup (lihat juga migrasi terbaru)
 CREATE OR REPLACE FUNCTION public.handle_new_user()

@@ -1,7 +1,7 @@
 export const SITE_NAME = "QalbiTahfidz";
-export const SITE_TAGLINE = "Hafalan Al-Qur'an untuk Keluarga Indonesia";
+export const SITE_TAGLINE = "Platform hafalan Al-Qur'an untuk anak & keluarga";
 export const SITE_DESCRIPTION =
-  "Aplikasi PWA hafalan Al-Qur'an anak & keluarga: Metode Ummi (Nada Nahawand), pengulangan berjenjang Tikrar, sistem ulangan berjarak FSRS, dan mushaf dwi-skrip Uthmani/IndoPak.";
+  "Web app (PWA) hafalan Al-Qur'an: audio per ayat dengan Metode Ummi/Nahawand, pengulangan Tikrar, penjadwalan ulangan FSRS, mushaf dwi-skrip Uthmani/IndoPak, dan dashboard pantauan untuk orang tua & guru.";
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://quran.ilmify.id";
 
