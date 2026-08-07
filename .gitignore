@@ -17,6 +17,11 @@
 /.next/
 /out/
 
+# PWA (artefak service worker dihasilkan serwist saat build)
+/public/sw.js
+/public/sw.js.map
+/public/workbox-*.js
+
 # production
 /build
 

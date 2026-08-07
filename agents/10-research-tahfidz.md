@@ -55,7 +55,7 @@ Sudah dipakai sebagai engine SRS — stabilitas & kesulitan dari rating 1–4 (A
 ### 2.3 AI speech / koreksi bacaan
 | Resource | Lisensi | Status | Catatan |
 | :--- | :--- | :--- | :--- |
-| **tarteel-ai/whisper-base-ar-quran** | Apache-2.0 | ✅ | Fine-tune `openai/whisper-base` utk Quran; metrik WER. Basis model fase-2 |
+| **tarteel-ai/whisper-base-ar-quran** | Apache-2.0 | ✅ | Fine-tune `openai/whisper-base` utk Quran; metrik WER. **Kandidat fase lanjut (hosting Modal), bukan rencana aktif** |
 | **sayedmahmoud266/quran-ai-transcriping** | MIT | ⚠️ | FastAPI 0.104+; constraint propagation thd PyQuran 6.236 ayat; klaim akurasi 100%; **eksperimental & akan diarsipkan** — jadikan referensi, bukan dependensi |
 | **yayaiu6/Real-Time-Quran-recitation-tracker** | MIT | ✅ | 106★; word-by-word realtime; fuzzy matching ala Tarteel — pola untuk integrasi client-side |
 | **cpfair/quran-tajweed** | — | ⚠️ | JSON tajwid `{rule,start,end}`; index **Unicode codepoint** thd salinan `quran-uthmani.txt` (dari repo, ca Apr 2017) — data tajwid, bukan speech |
@@ -77,26 +77,31 @@ Sudah dipakai sebagai engine SRS — stabilitas & kesulitan dari rating 1–4 (A
 
 ---
 
-## 3. Keputusan Arsitektur AI Speech (tercatat 2026-08-07)
+## 3. Keputusan Arsitektur AI Speech (tercatat 2026-08-07, direvisi)
 
-**Keputusan:** integrasi parsial client-side untuk MVP **+** rancang desain backend fase-2 (di luar scope MVP).
+**Keputusan:** arsitektur berlapis — **Cloudflare Workers AI (server) primary + client-side WebGPU (fallback)**. Backend FastAPI/Railway **dikeluarkan dari rencana MVP**.
 
-### 3.1 MVP — client-side (tanpa backend baru)
-- Pola `yayaiu6`: rekam audio via `MediaRecorder` di browser → word-by-word tracking dengan fuzzy string matching terhadap teks ayat target.
-- Trade-off jujur: akurasi lebih rendah dari model server; cukup untuk mode latihan ringan ("latihan mengikuti") tanpa false-positive yang parah.
-- Simpan hasil di `hifz_cards` (status bacaan) via queue offline `srs_outbox`.
+### 3.1 Level 1 — Cloudflare Workers AI (PRIMARY, server-side, tanpa backend Python)
+- **Model:** `@cf/openai/whisper-large-v3-turbo` (default; 46,63 neuron/mnt audio) dengan **auto-downgrade** ke `@cf/openai/whisper` (41,14 neuron/mnt) saat kuota harian menipis.
+- **Kuota:** gratis **10.000 neuron/hari** (reset harian, tanpa kartu kredit) ≈ **±214–240 mnt audio/hari** — cukup untuk pemakaian anak-anak.
+- **Integrasi:** Next.js route handler server-side → `POST /accounts/{account_id}/ai/run/{model}`; token di server env (tidak bocor ke client).
+- **Endpoint:** `POST /api/verify` → body `{ audio_blob, format, surah, ayah_start, ayah_end }` → res `{ detected_verse, confidence, word_timings: [{word, start_ms, end_ms}] }`.
+- **Alignment:** constraint propagation thd kanonik 6.236 ayat (data lokal / PyQuran) — pola `sayedmahmoud266`; **jangan depend `quran-ai-transcriping`** (akan diarsipkan).
+- **Batas request ±25 MB audio** → kirim **per-ayat** (klip ≤ 30–60 dtk).
+- **Alur:** client rekam → kirim per-ayat → transkripsi + alignment → hasil per-ayat → umpan balik + simpan ke Supabase.
 
-### 3.2 Fase-2 — backend FastAPI (desain, bukan implementasi)
-```
-POST /verify
-  body: { audio_bytes, format, surah, ayah_start, ayah_end }
-  res : { detected_verse, confidence, word_timings: [{word, start_ms, end_ms}] }
-```
-1. **Model:** `tarteel-ai/whisper-base-ar-quran` (Apache-2.0) — fine-tune `openai/whisper-base`.
-2. **Alignment:** constraint propagation thd kanonik 6.236 ayat (PyQuran / data lokal) — pola `sayedmahmoud266`.
-3. **Alur:** client rekam → kirim → transkripsi + alignment → hasil per-ayat → umpan balik + simpan ke Supabase.
-4. **Hosting:** service Python terpisah di Railway (bukan di stack Next.js/Supabase sekarang).
-5. **Catatan:** jangan depend ke `quran-ai-transcriping` (akan diarsipkan) — pinjam pola constraint propagation-nya.
+### 3.2 Level 2 — Client-side fallback (WebGPU, offline PWA)
+- **Paket:** `browser-whisper` (WebGPU + WebCodecs + OPFS caching; MIT) + `onnx-community/whisper-base` q4 (±75 MB, cache di OPFS → jalan offline setelah unduh pertama).
+- **Referensi implementasi:** `xenova/whisper-web`, `whisper-web-scribe` (React + Vite + Tailwind — persis stack).
+- **Aktif saat:** offline / rate-limit / server down / kuota L1 habis.
+- **Trade-off jujur:** butuh WebGPU (Chrome/Edge 113+, Safari 18+, Firefox 141+); WASM fallback lambat; akurasi < server — verifikasi konservatif.
+- **Level 3 (last resort):** WASM lambat atau self-check manual.
+- Simpan hasil di `hifz_cards` (status bacaan) via queue offline `srs_outbox` (semua lapisan).
+
+### 3.3 Kandidat fase lanjut (bukan rencana aktif)
+- **Fine-tune `tarteel-ai/whisper-base-ar-quran`** (Apache-2.0) → hosting **Modal** (~$30/bln kredit, serverless GPU, scale-to-zero) **bukan Railway**.
+- **Mengapa bukan Railway free tier:** $1/bln credit (non-rollover), 1 vCPU/0,5 GB, 1 replica; runtime whisper always-on ≈ $25/bln → melebihi $1 dalam hitungan jam → **deployment shutdown otomatis**. Hobby $5/bln masih kalah dgn Cloudflare gratis.
+- **Tarteel QUL** (`qul.tarteel.ai`): status **tidak pasti (site tidak responsif)** — jangan jadikan dependency kritis.
 
 ---
 
@@ -138,7 +143,7 @@ POST /verify
 
 | No | Keputusan |
 | :-- | :-- |
-| 1 | AI speech = integrasi parsial client-side (MVP) + desain backend FastAPI fase-2 |
+| 1 | AI speech = arsitektur berlapis **Cloudflare Workers AI (server, turbo + auto-downgrade) primary + client-side WebGPU fallback**; backend FastAPI/Railway **dikeluarkan dari rencana** |
 | 2 | Data koordinat legeRise = **diintegrasikan** (JSON MIT); gambar scan via **CDN + disclaimer** |
 | 3 | Dokumentasi riset = file baru ini di `agents/`; docs/quran dihapus dari repo DOCIFY (satu sumber kebenaran di qalbi) |
 | 4 | Skill `quran-tahfidz` dipindah ke `.agents/skills/quran-tahfidz/SKILL.md` (qalbi) |

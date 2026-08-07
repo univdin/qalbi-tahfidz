@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Generated artifacts (service worker dihasilkan serwist saat build):
+    "public/sw.js",
+    "public/sw.js.map",
+    "public/workbox-*.js",
   ]),
 ]);
 

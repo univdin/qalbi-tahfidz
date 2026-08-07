@@ -1,0 +1,65 @@
+import Link from "next/link";
+import { SURAHS } from "@/lib/surahs";
+import { Card, CardContent } from "@/components/ui/card";
+
+const JUZ_30_START = 78;
+
+export const metadata = {
+  title: "Pilih Surah — QalbiTahfidz",
+};
+
+export default function ReaderIndexPage() {
+  const juz30 = SURAHS.filter((s) => s.number >= JUZ_30_START);
+  const lainnya = SURAHS.filter((s) => s.number < JUZ_30_START);
+
+  const renderGrid = (list: typeof SURAHS) => (
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {list.map((s) => (
+        <Link key={s.number} href={`/reader/${s.number}`}>
+          <Card className="transition-colors hover:border-emerald-400 hover:shadow-md">
+            <CardContent className="flex items-center gap-3 p-4">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-600 font-arabic text-lg font-bold text-white">
+                {s.number}
+              </span>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-bold text-slate-900 dark:text-slate-50">
+                  {s.nameArabic} · {s.nameId}
+                </p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  {s.ayahCount} ayat · {s.revelation}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
+      ))}
+    </div>
+  );
+
+  return (
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-6 py-8">
+      <div>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
+          Pilih Surah
+        </h1>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          Mulai dari Juz 30 (dianjurkan untuk tahfidz anak) atau pilih surah lain.
+        </p>
+      </div>
+
+      <section>
+        <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-emerald-600">
+          Juz Amma (30)
+        </h2>
+        {renderGrid(juz30)}
+      </section>
+
+      <section>
+        <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-slate-500">
+          Surah Lainnya
+        </h2>
+        {renderGrid(lainnya)}
+      </section>
+    </div>
+  );
+}
