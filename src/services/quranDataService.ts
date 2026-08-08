@@ -5,6 +5,7 @@ export interface SurahVerse {
   textArabicUthmani: string;
   textArabicIndopak: string;
   translationId: string;
+  tafsirId?: string;
 }
 
 export interface DynamicSurahData {
@@ -39,6 +40,7 @@ interface GadingVerseDto {
   number: { inSurah: number };
   text: { arab: string; indopak?: string };
   translation: { id: string };
+  tafsir?: { id?: { short?: string; long?: string } };
 }
 
 interface GadingResponse {
@@ -64,6 +66,7 @@ function toSurahVerse(dto: GadingVerseDto): SurahVerse {
     textArabicUthmani: dto.text.arab,
     textArabicIndopak: dto.text.indopak || dto.text.arab,
     translationId: dto.translation.id,
+    tafsirId: dto.tafsir?.id?.short ?? "",
   };
 }
 

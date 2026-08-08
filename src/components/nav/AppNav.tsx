@@ -14,6 +14,7 @@ const NAV_ITEMS = [
   { href: "/cari", label: "Cari" },
   { href: "/quest", label: "Quest" },
   { href: "/mutashabihat", label: "Ayat Mirip" },
+  { href: "/tafsir-ai", label: "Tafsir AI" },
   { href: "/deck", label: "Hafalan" },
   { href: "/dashboard", label: "Pantauan" },
   { href: "/verify", label: "Verifikasi" },

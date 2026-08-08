@@ -46,6 +46,7 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
   const [data, setData] = useState<DynamicSurahData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showTranslation, setShowTranslation] = useState(true);
+  const [showTafsir, setShowTafsir] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [tajweedEnabled, setTajweedEnabled] = useState(false);
   const [tajweedState, setTajweedState] = useState<{
@@ -300,6 +301,13 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
               >
                 {showTranslation ? "Sembunyikan" : "Tampilkan"} terjemahan
               </button>
+              <button
+                type="button"
+                onClick={() => setShowTafsir((v) => !v)}
+                className="text-emerald-600 underline-offset-2 hover:underline"
+              >
+                {showTafsir ? "Sembunyikan" : "Tampilkan"} tafsir
+              </button>
             </div>
           </div>
 
@@ -385,6 +393,17 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
                   {verse.translationId}
                 </p>
               </>
+            )}
+
+            {showTafsir && verse.tafsirId && (
+              <div className="mt-3 rounded-lg bg-emerald-50/60 p-3 dark:bg-emerald-950/30">
+                <p className="mb-1 text-xs font-bold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
+                  Tafsir (Kemenag RI)
+                </p>
+                <p className="text-sm leading-7 text-slate-700 dark:text-slate-200">
+                  {verse.tafsirId}
+                </p>
+              </div>
             )}
 
             <div className="mt-4 flex flex-wrap items-center gap-2">
