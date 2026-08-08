@@ -10,8 +10,15 @@ import {
   proxyAudioUrl,
 } from "@/lib/surahs";
 import { WordMaskingContainer } from "@/components/quran/WordMaskingContainer";
+import { TajweedText } from "@/components/quran/TajweedText";
 import { AyahAudioEngine } from "@/components/quran/AyahAudioEngine";
 import { RecitationRecorder } from "@/components/quran/RecitationRecorder";
+import {
+  fetchTanzilUthmani,
+  getSurahTajweed,
+  getTajweedData,
+  type TajweedRange,
+} from "@/lib/tajweed";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -37,6 +44,12 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
   const [error, setError] = useState<string | null>(null);
   const [showTranslation, setShowTranslation] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [tajweedEnabled, setTajweedEnabled] = useState(false);
+  const [tajweedState, setTajweedState] = useState<{
+    surah: number;
+    map: Map<number, TajweedRange[]>;
+    tanzil: Map<number, string>;
+  } | null>(null);
 
   const {
     isPlaying,
@@ -74,6 +87,24 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
   }, [surahNumber]);
 
   const totalAyat = data?.verses.length ?? surahMeta?.ayahCount ?? 0;
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!tajweedEnabled) return;
+    Promise.all([getTajweedData(), fetchTanzilUthmani(surahNumber)])
+      .then(([tajweed, tanzil]) => {
+        if (cancelled) return;
+        setTajweedState({
+          surah: surahNumber,
+          map: getSurahTajweed(surahNumber, tajweed),
+          tanzil,
+        });
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [tajweedEnabled, surahNumber]);
 
   const handleStart = useCallback(() => {
     setAudioState({ isPlaying: true, currentAyahIndex: 0, currentAyahRepeat: 0, isSilenceGap: false });
@@ -259,6 +290,24 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
               </button>
             </div>
           </div>
+
+          <div className="sm:col-span-2">
+            <button
+              type="button"
+              onClick={() => setTajweedEnabled((v) => !v)}
+              className={`rounded-lg px-3 py-2 text-sm font-semibold transition-colors ${
+                tajweedEnabled
+                  ? "bg-emerald-600 text-white"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300"
+              }`}
+            >
+              {tajweedEnabled ? "✓ Tajwid Aktif" : "🎨 Tampilkan Tajwid"}
+            </button>
+            <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
+              Penanda warna hukum bacaan (Ghunnah, Idgham, Ikhfa, Iqlab, Mad, Qalqalah, dll).
+              Sumber: quran-tajweed-embedded (CC BY 4.0) · teks Tanzil Uthmani.
+            </p>
+          </div>
         </CardContent>
       </Card>
 
@@ -294,13 +343,24 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
               />
             </div>
 
-            <WordMaskingContainer
-              textUthmani={verse.textArabicUthmani}
-              textIndopak={verse.textArabicIndopak}
-              script={preferredScript}
-              mode={maskingMode}
-              fontSize="large"
-            />
+            {tajweedEnabled && tajweedState?.surah === surahNumber ? (
+              <TajweedText
+                text={
+                  tajweedState.tanzil.get(verse.number) ??
+                  verse.textArabicUthmani
+                }
+                ranges={tajweedState.map.get(verse.number) ?? []}
+                fontSize="large"
+              />
+            ) : (
+              <WordMaskingContainer
+                textUthmani={verse.textArabicUthmani}
+                textIndopak={verse.textArabicIndopak}
+                script={preferredScript}
+                mode={maskingMode}
+                fontSize="large"
+              />
+            )}
 
             {showTranslation && verse.translationId && (
               <>

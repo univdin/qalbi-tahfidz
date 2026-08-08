@@ -59,3 +59,6 @@ next-env.d.ts
 # dokumentasi internal agen & skill proyek (hanya lokal, tidak di-push)
 /agents/
 /.agents/
+
+# dokumentasi riset internal (pindah ke /agents/, hanya lokal)
+/docs/
