@@ -1,14 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { STORIES, MORAL_TAG_LABEL, MORAL_TAG_COLOR } from "@/data/stories";
 import { StoryGraph, useOpenReader } from "@/components/story/StoryGraph";
 import { BookMarked } from "lucide-react";
 
 export function StoryExplorer() {
   const [selectedId, setSelectedId] = useState(STORIES[0].id);
+  const detailRef = useRef<HTMLDivElement | null>(null);
   const openReader = useOpenReader();
   const story = STORIES.find((s) => s.id === selectedId) ?? STORIES[0];
+
+  const handleSelect = (id: string) => {
+    setSelectedId(id);
+    setTimeout(() => {
+      detailRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+  };
 
   return (
     <div className="grid w-full gap-6 lg:grid-cols-[280px_1fr]">
@@ -20,7 +28,7 @@ export function StoryExplorer() {
           <button
             key={s.id}
             type="button"
-            onClick={() => setSelectedId(s.id)}
+            onClick={() => handleSelect(s.id)}
             className={`rounded-xl border p-3 text-left transition-colors ${
               s.id === selectedId
                 ? "border-emerald-400 bg-emerald-50 dark:border-emerald-700 dark:bg-emerald-950/40"
@@ -46,7 +54,7 @@ export function StoryExplorer() {
         ))}
       </aside>
 
-      <div className="flex flex-col gap-4">
+      <div ref={detailRef} className="flex flex-col gap-4">
         <div>
           <h2 className="flex items-center gap-2 text-xl font-bold text-slate-900 dark:text-slate-50">
             <BookMarked className="h-6 w-6 text-emerald-600 shrink-0" />

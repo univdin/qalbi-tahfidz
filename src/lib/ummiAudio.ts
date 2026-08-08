@@ -71,7 +71,7 @@ export function getUmmiFile(surah: number): string | null {
 }
 
 export function ummiDownloadUrl(file: string): string {
-  return `https://archive.org/download/${UMMI_ITEM}/${file}`;
+  return `https://archive.org/download/${UMMI_ITEM}/${encodeURIComponent(file)}`;
 }
 
 export function ummiAudioUrl(surah: number): string | null {

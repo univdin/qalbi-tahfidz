@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   getMutashabihatData,
@@ -62,6 +62,8 @@ export function MutashabihatExplorer() {
     [data, juz]
   );
 
+  const detailRef = useRef<HTMLDivElement | null>(null);
+
   const loadGroup = useCallback(
     async (group: MutashabihatGroup, index: number) => {
       setSelected(index);
@@ -71,6 +73,9 @@ export function MutashabihatExplorer() {
       const store = await loadTexts(surahs);
       setTextStore(store);
       setLoading(false);
+      setTimeout(() => {
+        detailRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, 50);
     },
     []
   );
@@ -130,7 +135,7 @@ export function MutashabihatExplorer() {
       </div>
 
       {selected !== null && active && (
-        <Card>
+        <Card ref={detailRef}>
           <CardContent className="flex flex-col gap-4 p-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>

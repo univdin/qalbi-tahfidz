@@ -25,6 +25,7 @@ import {
   type TajweedRange,
 } from "@/lib/tajweed";
 import { firstArabicChar, getZoneForLetter, type MakhrajZone } from "@/lib/makhraj";
+import { getSurahJuzStart, getSurahPageStart } from "@/data/quranBounds";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SlidersHorizontal, Play, Square, RotateCcw, Palette } from "lucide-react";
@@ -234,22 +235,27 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowSettings(true)}
-              className="gap-1.5"
-            >
-              <SlidersHorizontal className="h-4 w-4" />
-              <span>Pengaturan</span>
-            </Button>
+            <div className="flex items-center gap-1 rounded-xl bg-slate-100 p-1 text-xs font-medium dark:bg-slate-800">
+              <Link href={`/reader/${surahNumber}`} className="rounded-lg bg-white px-2.5 py-1.5 font-bold text-emerald-700 shadow-sm dark:bg-slate-700 dark:text-emerald-300">
+                Surah
+              </Link>
+              <Link href={`/juz/${getSurahJuzStart(surahNumber)}`} className="rounded-lg px-2.5 py-1.5 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200">
+                Juz {getSurahJuzStart(surahNumber)}
+              </Link>
+              <Link href={`/halaman/${getSurahPageStart(surahNumber)}`} className="rounded-lg px-2.5 py-1.5 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200">
+                Hal {getSurahPageStart(surahNumber)}
+              </Link>
+              <Link href="/mutashabihat" className="rounded-lg px-2.5 py-1.5 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200">
+                Mutashabihat
+              </Link>
+            </div>
             {isPlaying ? (
               <Button onClick={handleStop} variant="destructive" size="sm" className="gap-1.5">
                 <Square className="h-4 w-4 fill-current" /> Berhenti
               </Button>
             ) : (
               <Button onClick={handleStart} size="sm" className="gap-1.5 bg-emerald-600 hover:bg-emerald-700">
-                <Play className="h-4 w-4 fill-current" /> Putar Semua ({totalAyat} ayat)
+                <Play className="h-4 w-4 fill-current" /> Putar All ({totalAyat})
               </Button>
             )}
           </div>
@@ -606,6 +612,17 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
           </div>
         </div>
       )}
+
+      {/* Floating Settings FAB */}
+      <button
+        type="button"
+        onClick={() => setShowSettings(true)}
+        className="fixed bottom-24 right-4 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg transition-transform hover:scale-105 active:scale-95 dark:bg-emerald-500"
+        aria-label="Pengaturan Bacaan"
+        title="Pengaturan Bacaan"
+      >
+        <SlidersHorizontal className="h-5 w-5" />
+      </button>
     </div>
   );
 };

@@ -213,6 +213,11 @@ export function UmmiPlayer() {
             onPlaying={() => setIsLoading(false)}
             onWaiting={() => setIsLoading(true)}
             onError={() => {
+              if (src && !src.includes("/api/audio/proxy")) {
+                const proxyUrl = `/api/audio/proxy?url=${encodeURIComponent(src)}`;
+                setSrc(proxyUrl);
+                return;
+              }
               setError("Gagal memuat audio. Periksa koneksi lalu coba lagi.");
               setIsLoading(false);
             }}
