@@ -40,19 +40,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  // Priority Ayah Routes (Juz Amma + Key Surahs)
-  const priorityAyahRoutes: MetadataRoute.Sitemap = [];
+  // Full Ayah Coverage (6.236 URL) — KR2.1: semua ayat terindeks.
+  // Priority tinggi (Juz Amma + surah kunci) vs long-tail (hemat crawl budget).
   const prioritySurahs = [1, 2, 36, 67, 56, 18, 55, ...SURAHS.filter((s) => s.number >= 78).map((s) => s.number)];
-  for (const sNum of prioritySurahs) {
-    const meta = SURAHS.find((s) => s.number === sNum);
-    if (!meta) continue;
-    const limit = Math.min(meta.ayahCount, 10);
-    for (let a = 1; a <= limit; a++) {
-      priorityAyahRoutes.push({
-        url: `${SITE_URL}/reader/${sNum}/${a}`,
+  const ayahRoutes: MetadataRoute.Sitemap = [];
+  for (const meta of SURAHS) {
+    const isPriority = prioritySurahs.includes(meta.number);
+    for (let a = 1; a <= meta.ayahCount; a++) {
+      ayahRoutes.push({
+        url: `${SITE_URL}/reader/${meta.number}/${a}`,
         lastModified: now,
-        changeFrequency: "monthly",
-        priority: 0.6,
+        changeFrequency: isPriority ? "monthly" : "yearly",
+        priority: isPriority ? 0.6 : 0.4,
       });
     }
   }
@@ -87,7 +86,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...surahRoutes,
     ...juzRoutes,
     ...kisahRoutes,
-    ...priorityAyahRoutes,
+    ...ayahRoutes,
     ...articleRoutes,
     ...amalanRoutes,
   ];

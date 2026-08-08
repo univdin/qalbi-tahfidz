@@ -126,6 +126,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     description: SITE_DESCRIPTION,
     logo: { "@type": "ImageObject", url: absoluteUrl("/icon-512.png") },
     sameAs: ["https://github.com/univdin/qalbi-tahfidz"],
+    knowsAbout: {
+      "@type": "Book",
+      "@id": "https://en.wikipedia.org/wiki/Quran",
+      name: "Al-Qur'an",
+      inLanguage: ["ar", "id"],
+      url: "https://quran.com",
+    },
   };
 
   return (

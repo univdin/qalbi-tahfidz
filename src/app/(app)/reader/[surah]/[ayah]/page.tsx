@@ -6,6 +6,7 @@ import { fetchDynamicSurah } from "@/services/quranDataService";
 import { absoluteUrl, SITE_URL } from "@/lib/site";
 import { getSurahMeta, SURAHS } from "@/lib/surahs";
 import { getSurahJuzStart, getSurahPageStart } from "@/data/quranBounds";
+import { QURAN_ENTITY, QURANIC_ENTITIES_BY_SURAH } from "@/data/quranicEntities";
 import { AyahAudioEngine } from "@/components/quran/AyahAudioEngine";
 import { BookmarkButton } from "@/components/quran/BookmarkButton";
 import { ChevronLeft, ChevronRight, BookOpen, ArrowLeft } from "lucide-react";
@@ -120,10 +121,54 @@ export default async function DedicatedAyahPage({ params }: AyahPageProps) {
     },
   };
 
+  // Citation schema (GEO) — @id stabil dari quran.com agar AI engine & Google
+  // mengenali kutipan ini sebagai Surah N ayat M yang persis sama di sumber kanonik.
+  const verseUrl = `https://quran.com/${sNum}/${aNum}`;
+  const surahEntities = QURANIC_ENTITIES_BY_SURAH[sNum] ?? [];
+  const jsonLdQuotation = {
+    "@context": "https://schema.org",
+    "@type": "Quotation",
+    "@id": `${SITE_URL}/reader/${sNum}/${aNum}#ayah`,
+    url: absoluteUrl(`/reader/${sNum}/${aNum}`),
+    isPartOf: {
+      "@type": ["CreativeWork", "Book"],
+      "@id": `${SITE_URL}/reader/${sNum}#surah`,
+      name: `Surah ${meta.nameId} (${meta.nameArabic})`,
+      url: absoluteUrl(`/reader/${sNum}`),
+      position: sNum,
+      isPartOf: {
+        "@type": ["CreativeWork", "Book"],
+        "@id": QURAN_ENTITY.url,
+        name: "Al-Qur'an",
+        inLanguage: ["ar", "id"],
+        url: "https://quran.com",
+      },
+    },
+    about: {
+      "@id": QURAN_ENTITY.url,
+      name: "Al-Qur'an",
+    },
+    mentions: surahEntities.map((e) => ({
+      "@type": "Thing",
+      "@id": e.url,
+      name: e.name,
+    })),
+    text: `${verse.textArabicUthmani} ${verse.translationId ?? ""}`,
+    inLanguage: ["ar", "id"],
+    author: { "@type": "Organization", name: "QalbiTahfidz", url: SITE_URL },
+    citation: {
+      "@type": "CreativeWork",
+      "@id": verseUrl,
+      name: `Quran.com ${sNum}:${aNum}`,
+      url: verseUrl,
+    },
+  };
+
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-8">
       <JsonLd data={jsonLdBreadcrumb} />
       <JsonLd data={jsonLdQAPage} />
+      <JsonLd data={jsonLdQuotation} />
 
       {/* Nav Breadcrumb */}
       <div className="flex items-center justify-between text-xs text-slate-500">

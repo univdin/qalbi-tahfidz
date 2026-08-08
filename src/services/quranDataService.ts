@@ -73,11 +73,13 @@ function toSurahVerse(dto: GadingVerseDto): SurahVerse {
 export async function fetchDynamicSurah(
   surahNumber: number
 ): Promise<DynamicSurahData> {
-  const db = await getLocalDb();
+  // IndexedDB is browser-only; on the server (SSG/prerender) skip the local cache.
+  const canUseIdb = typeof indexedDB !== "undefined";
+  const db = canUseIdb ? await getLocalDb() : null;
 
-  const cached = (await db.get("surahs", surahNumber)) as
-    | DynamicSurahData
-    | undefined;
+  const cached = db
+    ? ((await db.get("surahs", surahNumber)) as DynamicSurahData | undefined)
+    : undefined;
 
   if (cached && typeof navigator !== "undefined" && !navigator.onLine) {
     return { ...cached, source: "indexeddb_cache" };
@@ -95,7 +97,7 @@ export async function fetchDynamicSurah(
         verses: json.data.verses.map(toSurahVerse),
         source: "gadingnst",
       };
-      await db.put("surahs", payload, surahNumber);
+      await db?.put("surahs", payload, surahNumber);
       return payload;
     }
   } catch {
@@ -131,7 +133,7 @@ export async function fetchDynamicSurah(
         })),
         source: "fawazahmed0_static",
       };
-      await db.put("surahs", payload, surahNumber);
+      await db?.put("surahs", payload, surahNumber);
       return payload;
     }
   } catch {

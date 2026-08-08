@@ -29,6 +29,8 @@ ${SITE_NAME} adalah aplikasi progresif (PWA) gratis untuk menghafal Al-Qur'an an
 
 Akses cepat: ${SITE_URL}
 
+> Dataset lengkap 6.236 ayat (Arab + terjemahan Indonesia): ${SITE_URL}/llms-full.txt
+
 ## Key Features
 
 - **Murottal Per Ayat**: pemutar audio per-ayat (qari standar) dengan jeda hening otomatis untuk latihan menirukan.
