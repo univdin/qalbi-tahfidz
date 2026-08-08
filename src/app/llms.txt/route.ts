@@ -46,6 +46,7 @@ Akses cepat: ${SITE_URL}
 - [Metode Ummi — Murottal Anak Juz 30](/ummi) — modul khusus murottal anak (Nada Nahawand).
 - [Cari Ayat](/cari) — pencarian ayat dengan teks Arab/lemma/akar kata (API: /api/quran/search).
 - [Mutashabihat — Ayat Mirip](/mutashabihat) — bandingkan ayat mirip dengan penyorotan perbedaan kata.
+- [Kisah dalam Al-Qur'an](/kisah) — peta interaktif kisah para nabi dengan rujukan ayat.
 - [Masuk](/auth/login) & [Daftar](/auth/signup) — akun orang tua/guru/anak.
 
 ## Surah (114)

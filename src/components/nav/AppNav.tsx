@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 const NAV_ITEMS = [
   { href: "/reader", label: "Murottal" },
   { href: "/ummi", label: "Metode Ummi" },
+  { href: "/kisah", label: "Kisah" },
   { href: "/cari", label: "Cari" },
   { href: "/quest", label: "Quest" },
   { href: "/mutashabihat", label: "Ayat Mirip" },
