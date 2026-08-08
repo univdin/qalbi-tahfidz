@@ -7,6 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 
+const QUICK_PROMPTS = [
+  "Saya merasa gagal dan putus asa, ayat mana yang menenangkan?",
+  "Saya sedang terlilit banyak hutang, apa penguat dari Al-Qur'an?",
+  "Bagaimana Al-Qur'an menenangkan hati yang cemas dan gelisah?",
+  "Apa ayat yang menguatkan saat kehilangan orang tercinta?",
+];
+
 export function TafsirAiChat() {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState<string | null>(null);
@@ -70,6 +77,19 @@ export function TafsirAiChat() {
           pertanyaan = 1 kredit
         </p>
       )}
+
+      <div className="flex flex-wrap gap-2">
+        {QUICK_PROMPTS.map((p) => (
+          <button
+            key={p}
+            type="button"
+            onClick={() => setQuestion(p)}
+            className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-100 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-900/50"
+          >
+            {p.slice(0, 40)}…
+          </button>
+        ))}
+      </div>
 
       <form onSubmit={handleSubmit} className="flex gap-2">
         <Input

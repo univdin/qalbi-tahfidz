@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readFileSync } from "fs";
 import { join } from "path";
+import { arabicSkeleton, isArabicText, normalizeArabic } from "@/lib/arabicNlp";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,16 +12,6 @@ interface Verse {
   u: string;
   t: string;
   n: string;
-}
-
-const TASH = /[\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g;
-
-function normalizeArabic(t: string): string {
-  return t
-    .replace(TASH, "")
-    .replace(/[\u0623\u0625\u0622\u0671]/g, "\u0627")
-    .replace(/\u0649/g, "\u064A")
-    .replace(/\u0629/g, "\u0647");
 }
 
 let indexCache: Verse[] | null = null;
@@ -53,7 +44,7 @@ export async function GET(request: NextRequest) {
   try {
     const verses = loadIndex();
     const lowerQ = q.toLowerCase();
-    const hasArabic = /[\u0621-\u064A]/.test(q);
+    const hasArabic = isArabicText(q);
     const qNorm = normalizeArabic(q);
 
     const matches: Match[] = [];
@@ -74,9 +65,9 @@ export async function GET(request: NextRequest) {
     // Fallback "kerangka" (buang alif di kedua sisi) agar ا pada teks Uthmani
     // (mis. dagger alef) tetap cocok dengan ejaan pengguna (mis. القيامة).
     if (matches.length === 0 && hasArabic && qNorm) {
-      const qSkel = qNorm.replace(/\u0627/g, "");
+      const qSkel = arabicSkeleton(qNorm);
       for (const v of verses) {
-        if (qSkel && v.u.replace(/\u0627/g, "").includes(qSkel)) {
+        if (qSkel && arabicSkeleton(v.u).includes(qSkel)) {
           matches.push({ verse: v, score: 1 });
         }
       }

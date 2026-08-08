@@ -21,6 +21,7 @@ interface SearchResponse {
 
 export function SearchBox() {
   const [query, setQuery] = useState("");
+  const [mode, setMode] = useState<"teks" | "akar">("teks");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -34,7 +35,8 @@ export function SearchBox() {
     setError(null);
     setSearched(true);
     try {
-      const res = await fetch(`/api/quran/search?q=${encodeURIComponent(q)}&limit=20`);
+      const endpoint = mode === "akar" ? "/api/quran/root" : "/api/quran/search";
+      const res = await fetch(`${endpoint}?q=${encodeURIComponent(q)}&limit=20`);
       const json = (await res.json()) as SearchResponse;
       if (!res.ok || json.error) {
         setError(json.error ?? "Pencarian gagal.");
@@ -54,7 +56,29 @@ export function SearchBox() {
   };
 
   return (
-    <div className="flex w-full max-w-3xl flex-col gap-6">
+    <div className="flex w-full max-w-3xl flex-col gap-4">
+      <div className="flex gap-1 rounded-xl bg-slate-100 p-1 dark:bg-slate-800">
+        {(
+          [
+            ["teks", "Cari Teks"],
+            ["akar", "Cari Akar Kata"],
+          ] as const
+        ).map(([m, label]) => (
+          <button
+            key={m}
+            type="button"
+            onClick={() => setMode(m)}
+            className={`flex-1 rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors ${
+              mode === m
+                ? "bg-white text-emerald-700 shadow-sm dark:bg-slate-700 dark:text-emerald-300"
+                : "text-slate-500 dark:text-slate-400"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
       <form onSubmit={handleSearch} className="flex gap-2">
         <Input
           type="search"

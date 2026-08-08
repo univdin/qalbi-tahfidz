@@ -553,6 +553,7 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
                   setDetail({
                     surah: surahNumber,
                     ayah: verse.number,
+                    arabic: verse.textArabicUthmani,
                     translation: verse.translationId,
                     tafsir: verse.tafsirId,
                   })

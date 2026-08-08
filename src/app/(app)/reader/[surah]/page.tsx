@@ -37,6 +37,7 @@ export async function generateMetadata({
       description,
       siteName: "QalbiTahfidz",
       locale: "id_ID",
+      images: [{ url: absoluteUrl(`/api/og/${number}/1`), width: 1200, height: 630, alt: title }],
     },
   };
 }

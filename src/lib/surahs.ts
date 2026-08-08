@@ -129,6 +129,18 @@ export function getSurahMeta(number: number): SurahMeta | undefined {
   return SURAHS.find((s) => s.number === number);
 }
 
+export function surahSlug(surah: SurahMeta): string {
+  return surah.nameId
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+export function getSurahBySlug(slug: string): SurahMeta | undefined {
+  const s = slug.trim().toLowerCase();
+  return SURAHS.find((x) => surahSlug(x) === s);
+}
+
 export function formatAyahFile(surah: number, ayah: number): string {
   return `${String(surah).padStart(3, "0")}${String(ayah).padStart(3, "0")}`;
 }
