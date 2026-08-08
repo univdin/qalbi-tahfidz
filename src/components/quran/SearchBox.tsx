@@ -5,19 +5,17 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import { getSurahMeta } from "@/lib/surahs";
 
 interface SearchResult {
   sura_id: number;
   aya_id: number;
-  aya_id_display: string;
   uthmani: string;
-  sura_name: string;
-  sura_name_romanization: string;
+  translationId?: string;
 }
 
 interface SearchResponse {
   results?: SearchResult[];
-  pagination?: { totalResults: number };
   error?: string;
 }
 
@@ -28,7 +26,6 @@ export function SearchBox() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searched, setSearched] = useState(false);
-
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     const q = query.trim();
@@ -45,7 +42,7 @@ export function SearchBox() {
         setTotal(0);
       } else {
         setResults(json.results ?? []);
-        setTotal(json.pagination?.totalResults ?? 0);
+        setTotal(json.results?.length ?? 0);
       }
     } catch {
       setError("Terjadi kesalahan jaringan.");
@@ -85,24 +82,33 @@ export function SearchBox() {
       )}
 
       <div className="flex flex-col gap-3">
-        {results.map((r) => (
-          <Link key={`${r.sura_id}-${r.aya_id}`} href={`/reader/${r.sura_id}#ayah-${r.aya_id}`}>
-            <Card className="transition-colors hover:border-emerald-400">
-              <CardContent className="flex flex-col gap-2 p-4">
-                <p className="text-xs font-semibold text-emerald-600">
-                  {r.sura_name_romanization} ({r.sura_name}) · Ayat {r.aya_id_display}
-                </p>
-                <p
-                  lang="ar"
-                  dir="rtl"
-                  className="font-arabic text-xl leading-relaxed text-slate-900 dark:text-slate-50"
-                >
-                  {r.uthmani}
-                </p>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
+        {results.map((r) => {
+          const meta = getSurahMeta(r.sura_id);
+          return (
+            <Link key={`${r.sura_id}-${r.aya_id}`} href={`/reader/${r.sura_id}#ayah-${r.aya_id}`}>
+              <Card className="transition-colors hover:border-emerald-400">
+                <CardContent className="flex flex-col gap-2 p-4">
+                  <p className="text-xs font-semibold text-emerald-600">
+                    {meta?.nameId ?? `Surah ${r.sura_id}`} ({meta?.nameArabic}) · Ayat{" "}
+                    {r.aya_id}
+                  </p>
+                  <p
+                    lang="ar"
+                    dir="rtl"
+                    className="font-arabic text-xl leading-relaxed text-slate-900 dark:text-slate-50"
+                  >
+                    {r.uthmani}
+                  </p>
+                  {r.translationId && (
+                    <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
+                      {r.translationId}
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

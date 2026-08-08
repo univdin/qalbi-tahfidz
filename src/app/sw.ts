@@ -29,6 +29,18 @@ const serwist = new Serwist({
         ],
       }),
     },
+    {
+      matcher: ({ url }) => /archive\.org$/.test(url.hostname),
+      handler: new CacheFirst({
+        cacheName: "archive-audio-cache",
+        plugins: [
+          new ExpirationPlugin({
+            maxEntries: 120,
+            maxAgeSeconds: 30 * 24 * 60 * 60,
+          }),
+        ],
+      }),
+    },
     ...defaultCache,
   ],
   fallbacks: {
