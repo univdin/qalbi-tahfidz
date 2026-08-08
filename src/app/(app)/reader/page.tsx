@@ -88,6 +88,20 @@ export default function ReaderIndexPage() {
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Mulai dari Juz 30 (dianjurkan untuk tahfidz anak) atau pilih surah lain.
         </p>
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+          <span className="font-semibold text-slate-500 dark:text-slate-400">
+            Mode baca:
+          </span>
+          <Link href="/reader" className="font-semibold text-emerald-600 hover:underline">
+            Surah
+          </Link>
+          <Link href="/juz" className="font-semibold text-emerald-600 hover:underline">
+            Juz
+          </Link>
+          <Link href="/halaman" className="font-semibold text-emerald-600 hover:underline">
+            Halaman
+          </Link>
+        </div>
       </div>
 
       <section>
