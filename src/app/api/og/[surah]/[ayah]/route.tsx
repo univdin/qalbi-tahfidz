@@ -19,13 +19,13 @@ async function loadFonts(): Promise<FontEntry[]> {
   ): Promise<FontEntry | null> => {
     try {
       const css = await fetch(
-        `https://fonts.googleapis.com/css2?family=Amiri:wght@${weight}&display=swap`,
+        `https://fonts.googleapis.com/css2?family=Vazirmatn:wght@${weight}&display=swap`,
         { headers: { "User-Agent": "Mozilla/5.0" } }
       ).then((r) => r.text());
-      const url = css.match(/url\((https:\/\/[^)]+\.woff2)\)/);
+      const url = css.match(/url\((https:\/\/[^)]+\.(?:ttf|otf|woff))\)/);
       if (!url) return null;
       const buf = await fetch(url[1]).then((r) => r.arrayBuffer());
-      return { data: buf, weight: Number(weight) as 400 | 700, name: "Amiri" };
+      return { data: buf, weight: Number(weight) as 400 | 700, name: "Vazirmatn" };
     } catch {
       return null;
     }
@@ -96,7 +96,7 @@ export async function GET(_request: NextRequest, { params }: Params) {
             color: "#f8fafc",
             fontSize: 64,
             lineHeight: 1.5,
-            fontFamily: "Amiri",
+            fontFamily: "Vazirmatn",
           }}
           dir="rtl"
         >
@@ -123,6 +123,6 @@ export async function GET(_request: NextRequest, { params }: Params) {
         </div>
       </div>
     ),
-    { width: 1200, height: 630, fonts }
+    { width: 1200, height: 630, ...(fonts.length ? { fonts } : {}) }
   );
 }
