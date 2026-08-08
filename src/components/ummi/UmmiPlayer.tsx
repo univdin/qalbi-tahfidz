@@ -5,6 +5,7 @@ import { getSurahMeta } from "@/lib/surahs";
 import { UMMI_JUZ30, ummiAudioUrl } from "@/lib/ummiAudio";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Play, Pause, Square, SkipBack, SkipForward, Repeat, FastForward, Pin } from "lucide-react";
 
 const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5];
 
@@ -161,14 +162,24 @@ export function UmmiPlayer() {
                 aria-label="Surah sebelumnya"
                 className="min-h-12 min-w-12"
               >
-                ⏮
+                <SkipBack className="h-5 w-5" />
               </Button>
               <Button
                 onClick={togglePlay}
                 disabled={!src || isLoading}
-                className="min-h-12 w-24"
+                className="min-h-12 w-28 gap-2"
               >
-                {isLoading ? "Memuat…" : isPlaying ? "⏸ Jeda" : "▶ Putar"}
+                {isLoading ? (
+                  "Memuat…"
+                ) : isPlaying ? (
+                  <>
+                    <Pause className="h-5 w-5 fill-current" /> Jeda
+                  </>
+                ) : (
+                  <>
+                    <Play className="h-5 w-5 fill-current" /> Putar
+                  </>
+                )}
               </Button>
               <Button
                 size="icon"
@@ -177,7 +188,7 @@ export function UmmiPlayer() {
                 aria-label="Surah berikutnya"
                 className="min-h-12 min-w-12"
               >
-                ⏭
+                <SkipForward className="h-5 w-5" />
               </Button>
               <Button
                 size="icon"
@@ -186,7 +197,7 @@ export function UmmiPlayer() {
                 aria-label="Berhenti"
                 className="min-h-12 min-w-12"
               >
-                ⏹
+                <Square className="h-5 w-5 fill-current" />
               </Button>
             </div>
           </div>
@@ -248,25 +259,25 @@ export function UmmiPlayer() {
             <button
               type="button"
               onClick={() => setLoopSurah((v) => !v)}
-              className={`rounded-md px-2.5 py-1 text-xs font-semibold transition-colors ${
+              className={`flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-semibold transition-colors ${
                 loopSurah
                   ? "bg-emerald-600 text-white"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300"
               }`}
             >
-              🔁 Ulang surah
+              <Repeat className="h-3.5 w-3.5" /> Ulang surah
             </button>
 
             <button
               type="button"
               onClick={() => setAutoNext((v) => !v)}
-              className={`rounded-md px-2.5 py-1 text-xs font-semibold transition-colors ${
+              className={`flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-semibold transition-colors ${
                 autoNext
                   ? "bg-emerald-600 text-white"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300"
               }`}
             >
-              ⏭ Lanjut otomatis
+              <FastForward className="h-3.5 w-3.5" /> Lanjut otomatis
             </button>
 
             <div className="flex items-center gap-1">
@@ -274,24 +285,24 @@ export function UmmiPlayer() {
                 <button
                   type="button"
                   onClick={handleSetA}
-                  className="rounded-md bg-amber-500 px-2.5 py-1 text-xs font-semibold text-white"
+                  className="flex items-center gap-1 rounded-md bg-amber-500 px-2.5 py-1.5 text-xs font-semibold text-white"
                 >
-                  📍 Set A
+                  <Pin className="h-3.5 w-3.5" /> Set A
                 </button>
               ) : markStep === "setB" ? (
                 <button
                   type="button"
                   onClick={handleSetB}
-                  className="rounded-md bg-amber-500 px-2.5 py-1 text-xs font-semibold text-white"
+                  className="flex items-center gap-1 rounded-md bg-amber-500 px-2.5 py-1.5 text-xs font-semibold text-white"
                 >
-                  📍 Set B
+                  <Pin className="h-3.5 w-3.5" /> Set B
                 </button>
               ) : (
                 <button
                   type="button"
                   onClick={() => setMarkStep("setA")}
                   disabled={!src}
-                  className="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-200 disabled:opacity-40 dark:bg-slate-800 dark:text-slate-300"
+                  className="rounded-md bg-slate-100 px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-200 disabled:opacity-40 dark:bg-slate-800 dark:text-slate-300"
                 >
                   A–B Loop
                 </button>
@@ -345,7 +356,11 @@ export function UmmiPlayer() {
                     : "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-200"
                 }`}
               >
-                {active && isPlaying ? "▶" : entry.surah}
+                {active && isPlaying ? (
+                  <Play className="h-4 w-4 fill-current" />
+                ) : (
+                  entry.surah
+                )}
               </span>
               <div className="min-w-0">
                 <p

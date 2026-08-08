@@ -10,4 +10,4 @@ export function absoluteUrl(path: string): string {
   return `${SITE_URL}${normalized}`;
 }
 
-export const DEFAULT_OG_IMAGE = absoluteUrl("/icon-512.png");
+export const DEFAULT_OG_IMAGE = absoluteUrl("/og-image.svg");

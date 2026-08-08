@@ -100,7 +100,7 @@ export function MutashabihatExplorer() {
           ))}
         </select>
         <span className="text-sm text-slate-500">
-          {groups.length} kelompok ayat mirip di Juz {juz}
+          {groups.length} kelompok lafaz serupa di Juz {juz}
         </span>
       </div>
 
@@ -122,7 +122,7 @@ export function MutashabihatExplorer() {
                 {meta?.nameId ?? `Surah ${g.src.s}`} · {verseRefLabel(g.src)}
               </p>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                {g.muts.length} ayat mirip
+                {g.muts.length} lafaz serupa
               </p>
             </button>
           );

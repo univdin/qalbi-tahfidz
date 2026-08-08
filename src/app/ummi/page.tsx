@@ -68,7 +68,10 @@ export default function UmmiPage() {
         <p className="text-sm text-slate-500 dark:text-slate-400">
           Murottal Juz 30 dengan suara anak-anak bernada Metode Ummi/Nahawand.
           Cocok untuk anak menirukan dan menghafal. Putar satu surah, ulangi
-          segmen (A–B), atau biarkan lanjut otomatis ke surah berikutnya.
+          segmen (A–B), atau biarkan lanjut otomatis ke surah berikutnya.{" "}
+          <a href="/quest" className="font-semibold text-emerald-600 hover:underline">
+            Siap hafalan bertahap? Ikuti Quest Juz Amma →
+          </a>
         </p>
       </div>
 

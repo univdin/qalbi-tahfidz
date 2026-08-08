@@ -121,10 +121,10 @@ export const SrsDeck: React.FC = () => {
         <div className="flex items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
-              SRS Deck Hafalan
+              Jadwal Ulangan Hafalan
             </h1>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              Ulangan berjarak metode Ummi — Sabaq, Sabqi &amp; Manzil
+              Pengulangan terjadwal untuk menjaga kelekatan hafalan anak (Sabaq, Sabqi &amp; Manzil).
             </p>
           </div>
           <Badge variant="secondary">
@@ -281,11 +281,10 @@ export const SrsDeck: React.FC = () => {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
-                  <span>Stabilitas: {card.stability.toFixed(1)}</span>
-                  <span>Reps: {card.reps}</span>
-                  <span>Lapses: {card.lapses}</span>
+                  <span>Kekuatan Memori: {card.stability.toFixed(1)} Hari</span>
+                  <span>Diulang: {card.reps}x</span>
                   <span>
-                    Jatuh tempo:{" "}
+                    Jatuh Tempo:{" "}
                     {new Date(card.dueDate).toLocaleDateString("id-ID")}
                   </span>
                 </div>
@@ -295,7 +294,7 @@ export const SrsDeck: React.FC = () => {
                     href={`/reader/${card.surahNumber}#ayah-${card.ayahStart}`}
                     className="inline-flex h-8 items-center rounded-lg border border-slate-200 px-3 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
                   >
-                    Buka di Reader
+                    Buka Teks Ayat
                   </Link>
                   <div className="ml-auto flex items-center gap-2">
                     {RATINGS.map((r) => (
@@ -313,7 +312,7 @@ export const SrsDeck: React.FC = () => {
                 </div>
                 {busyId === card.id && (
                   <p className="text-xs text-slate-400">
-                    Menyimpan review ke Supabase…
+                    Menyimpan hasil ulangan…
                   </p>
                 )}
               </CardContent>

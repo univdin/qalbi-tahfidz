@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ParentDashboard } from "@/components/dashboard/ParentDashboard";
+import { DashboardNav } from "@/components/nav/DashboardNav";
 
 export const metadata: Metadata = {
   title: "Dashboard — QalbiTahfidz",
@@ -10,7 +11,8 @@ export const metadata: Metadata = {
 
 export default function DashboardPage() {
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col px-6 py-8">
+    <div className="mx-auto flex w-full max-w-5xl flex-col px-6 py-8 pb-24 sm:pb-8">
+      <DashboardNav />
       <ParentDashboard />
     </div>
   );

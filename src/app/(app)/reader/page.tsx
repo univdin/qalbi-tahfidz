@@ -6,6 +6,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { absoluteUrl, SITE_URL } from "@/lib/site";
 import { SURAHS } from "@/lib/surahs";
 
+import { Omnibox } from "@/components/quran/Omnibox";
+
 const JUZ_30_START = 78;
 
 export const metadata: Metadata = {
@@ -89,7 +91,10 @@ export default function ReaderIndexPage() {
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Mulai dari Juz 30 (dianjurkan untuk tahfidz anak) atau pilih surah lain.
         </p>
-        <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+        <div className="mt-4 max-w-xl">
+          <Omnibox />
+        </div>
+        <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
           <span className="font-semibold text-slate-500 dark:text-slate-400">
             Mode baca:
           </span>
@@ -101,6 +106,10 @@ export default function ReaderIndexPage() {
           </Link>
           <Link href="/halaman" className="font-semibold text-emerald-600 hover:underline">
             Halaman
+          </Link>
+          <span className="text-slate-300 dark:text-slate-600">·</span>
+          <Link href="/mutashabihat" className="font-semibold text-emerald-600 hover:underline">
+            Mutashabihat
           </Link>
         </div>
         <div className="mt-4">

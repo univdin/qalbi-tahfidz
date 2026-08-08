@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <!-- Base Background -->
+  <rect width="1200" height="630" fill="#059669" />
+  
+  <!-- Subtle Gradient Background Overlay -->
+  <rect width="1200" height="630" fill="url(#grad)" opacity="0.3" />
+  
+  <!-- Background Pattern / Noise (Subtle) -->
+  <path d="M0 0h1200v630H0z" fill="url(#pattern)" opacity="0.05" />
+
+  <!-- Logo (Scaled up version of icon) -->
+  <g transform="translate(100, 100) scale(0.6)">
+    <rect width="512" height="512" rx="128" fill="#FFFFFF" />
+    <path d="M256 128C185.308 128 128 185.308 128 256C128 326.692 185.308 384 256 384C326.692 384 384 326.692 384 256C384 185.308 326.692 128 256 128ZM256 341.333C208.872 341.333 170.667 303.128 170.667 256C170.667 208.872 208.872 170.667 256 170.667C303.128 170.667 341.333 208.872 341.333 256C341.333 303.128 303.128 341.333 256 341.333Z" fill="#059669" />
+    <circle cx="341" cy="170" r="28" fill="#f59e0b" />
+    <circle cx="384" cy="213" r="16" fill="#f59e0b" opacity="0.8" />
+    <circle cx="230" cy="190" r="14" fill="#059669" />
+    <circle cx="282" cy="190" r="14" fill="#059669" />
+  </g>
+
+  <!-- Typography -->
+  <!-- Title -->
+  <text x="460" y="240" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="84" fill="#FFFFFF" letter-spacing="-2">QalbiTahfidz</text>
+  
+  <!-- Tagline -->
+  <text x="465" y="320" font-family="system-ui, -apple-system, sans-serif" font-weight="500" font-size="36" fill="#D1FAE5">Hafalan Al-Qur'an Anak &amp; Keluarga</text>
+  
+  <!-- Feature Pills -->
+  <g transform="translate(465, 380)">
+    <rect width="240" height="60" rx="30" fill="#f59e0b" />
+    <text x="120" y="38" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="22" fill="#FFFFFF" text-anchor="middle">Metode Ummi (Audio)</text>
+  </g>
+  
+  <g transform="translate(730, 380)">
+    <rect width="200" height="60" rx="30" fill="#10B981" />
+    <text x="100" y="38" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="22" fill="#FFFFFF" text-anchor="middle">Algoritma FSRS</text>
+  </g>
+
+  <!-- Bottom decorative wave or shape -->
+  <path d="M0 550 Q 300 450 600 550 T 1200 550 L 1200 630 L 0 630 Z" fill="#047857" opacity="0.8" />
+  <path d="M0 580 Q 400 500 800 580 T 1200 560 L 1200 630 L 0 630 Z" fill="#064E3B" opacity="0.6" />
+
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34D399" />
+      <stop offset="100%" stop-color="#064E3B" />
+    </linearGradient>
+    <pattern id="pattern" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.5" fill="#FFFFFF"/>
+    </pattern>
+  </defs>
+</svg>

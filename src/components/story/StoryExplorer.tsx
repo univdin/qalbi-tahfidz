@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { STORIES, MORAL_TAG_LABEL, MORAL_TAG_COLOR } from "@/data/stories";
 import { StoryGraph, useOpenReader } from "@/components/story/StoryGraph";
+import { BookMarked } from "lucide-react";
 
 export function StoryExplorer() {
   const [selectedId, setSelectedId] = useState(STORIES[0].id);
@@ -26,8 +27,9 @@ export function StoryExplorer() {
                 : "border-slate-200 bg-white hover:border-emerald-300 dark:border-slate-700 dark:bg-slate-800/60"
             }`}
           >
-            <p className="text-sm font-bold text-slate-800 dark:text-slate-100">
-              {s.icon} {s.title}
+            <p className="flex items-center gap-2 text-sm font-bold text-slate-800 dark:text-slate-100">
+              <BookMarked className="h-4 w-4 text-emerald-600 shrink-0" />
+              <span>{s.title}</span>
             </p>
             <div className="mt-1 flex flex-wrap gap-1">
               {s.tags.slice(0, 3).map((t) => (
@@ -46,8 +48,9 @@ export function StoryExplorer() {
 
       <div className="flex flex-col gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-slate-50">
-            {story.icon} {story.title}
+          <h2 className="flex items-center gap-2 text-xl font-bold text-slate-900 dark:text-slate-50">
+            <BookMarked className="h-6 w-6 text-emerald-600 shrink-0" />
+            <span>{story.title}</span>
           </h2>
           <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">
             {story.desc}

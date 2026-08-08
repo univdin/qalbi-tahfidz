@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { BookmarkList } from "@/components/quran/BookmarkList";
+import { DashboardNav } from "@/components/nav/DashboardNav";
 
 export const metadata: Metadata = {
   title: "Penanda Ayat — QalbiTahfidz",
@@ -8,7 +9,8 @@ export const metadata: Metadata = {
 
 export default function BookmarkPage() {
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-6 py-8 pb-24 sm:pb-8">
+      <DashboardNav />
       <div>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
           Penanda Ayat

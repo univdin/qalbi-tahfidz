@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
 import { SrsDeck } from "@/components/deck/SrsDeck";
+import { DashboardNav } from "@/components/nav/DashboardNav";
 
 export const metadata: Metadata = {
-  title: "SRS Deck — QalbiTahfidz",
+  title: "Jadwal Ulangan Hafalan — QalbiTahfidz",
   description:
-    "Jadwal ulangan berjarak (FSRS) untuk Sabaq, Sabqi & Manzil hafalan Al-Qur'anmu.",
+    "Jadwal ulangan hafalan (Sabaq, Sabqi & Manzil) berdasarkan kestabilan ingatan anak.",
   robots: { index: false, follow: false },
 };
 
 export default function DeckPage() {
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col px-6 py-8">
+    <div className="mx-auto flex w-full max-w-4xl flex-col px-6 py-8 pb-24 sm:pb-8">
+      <DashboardNav />
       <SrsDeck />
     </div>
   );

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/core/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Bookmark } from "lucide-react";
 
 interface Props {
   surah: number;
@@ -74,8 +75,10 @@ export function BookmarkButton({ surah, ayah }: Props) {
       onClick={toggle}
       aria-pressed={active}
       aria-label={active ? `Hapus penanda ayat ${ayah}` : `Tandai ayat ${ayah}`}
+      className="gap-1.5"
     >
-      {active ? "🔖 Ditandai" : "🔖 Tandai"}
+      <Bookmark className={active ? "h-4 w-4 fill-current" : "h-4 w-4"} />
+      {active ? "Ditandai" : "Tandai"}
     </Button>
   );
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JuzAmmaQuest } from "@/components/quest/JuzAmmaQuest";
+import { DashboardNav } from "@/components/nav/DashboardNav";
 
 export const metadata: Metadata = {
   title: "Quest Hafalan Juz Amma — QalbiTahfidz",
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 export default function QuestPage() {
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-8">
+      <DashboardNav />
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
           Quest Hafalan Juz Amma

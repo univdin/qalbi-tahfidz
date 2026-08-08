@@ -6,6 +6,7 @@ import { JUZ30_QUESTS, questMeta } from "@/lib/quests";
 import { useQuestProgress } from "@/hooks/useQuestProgress";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Lock } from "lucide-react";
 
 function Stars({ value, size = "sm" }: { value: number; size?: "sm" | "lg" }) {
   return (
@@ -145,7 +146,7 @@ export function JuzAmmaQuest() {
                     </div>
                   ) : (
                     <span className="shrink-0 text-slate-300 dark:text-slate-600">
-                      🔒
+                      <Lock className="h-4 w-4" />
                     </span>
                   )}
                 </CardContent>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { TopUpForm } from "@/components/payment/TopUpForm";
+import { DashboardNav } from "@/components/nav/DashboardNav";
 
 export const metadata: Metadata = {
   title: "Isi Ulang Kredit — QalbiTahfidz",
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
 export default function TopUpPage() {
   return (
     <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 py-8">
+      <DashboardNav />
       <div>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
           Isi Ulang Kredit

@@ -6,6 +6,7 @@ import type { Range } from "@/data/quranBounds";
 import { getSurahMeta, proxyAudioUrl } from "@/lib/surahs";
 import { fetchRangesText } from "@/lib/quranReading";
 import type { DynamicSurahData } from "@/services/quranDataService";
+import { Play, Square } from "lucide-react";
 
 interface Props {
   ranges: Range[];
@@ -102,10 +103,18 @@ export function ReadingMode({ ranges }: Props) {
                   <button
                     type="button"
                     onClick={() => togglePlay(r.s, v.number)}
-                    className="text-sm font-semibold text-emerald-600 hover:underline"
+                    className="flex items-center gap-1.5 text-sm font-semibold text-emerald-600 hover:underline"
                     aria-label={`Putar ayat ${v.number}`}
                   >
-                    {playing === `${r.s}-${v.number}` ? "⏹ Berhenti" : "▶ Putar"}
+                    {playing === `${r.s}-${v.number}` ? (
+                      <>
+                        <Square className="h-4 w-4 fill-current" /> Berhenti
+                      </>
+                    ) : (
+                      <>
+                        <Play className="h-4 w-4 fill-current" /> Putar
+                      </>
+                    )}
                   </button>
                 </div>
                 <p

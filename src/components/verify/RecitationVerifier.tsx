@@ -6,6 +6,7 @@ import { isWebGPUSupported, transcribeClientWhisper } from "@/lib/clientWhisper"
 import { scoreRecitation } from "@/lib/recitationScore";
 import { fetchDynamicSurah } from "@/services/quranDataService";
 import { Button } from "@/components/ui/button";
+import { Mic, Square } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -237,8 +238,16 @@ export const RecitationVerifier: React.FC = () => {
             {recording
               ? uploading
                 ? "Memverifikasi…"
-                : "⏹ Stop & Verifikasi"
-              : "🎙 Mulai Rekam Bacaan"}
+                : (
+                    <>
+                      <Square className="h-4 w-4 fill-current" /> Stop &amp; Verifikasi
+                    </>
+                  )
+              : (
+                <>
+                  <Mic className="h-4 w-4 fill-current" /> Mulai Rekam Bacaan
+                </>
+              )}
           </Button>
 
           {recording && !uploading && (
