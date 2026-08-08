@@ -90,7 +90,7 @@ export const RecitationRecorder: React.FC<RecitationRecorderProps> = ({
                 activeTrack === "B" ? "bg-emerald-600 text-white" : "bg-slate-200 dark:bg-slate-700"
               }`}
             >
-              Track B: Qari Master (Ummi)
+              Track B: Qari Master
             </button>
           </div>
 

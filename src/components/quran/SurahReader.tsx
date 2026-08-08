@@ -6,8 +6,8 @@ import { fetchDynamicSurah, type DynamicSurahData } from "@/services/quranDataSe
 import { useAudioStore } from "@/store/useAudioStore";
 import {
   RECITERS,
-  everyayahAudioUrl,
   getSurahMeta,
+  proxyAudioUrl,
 } from "@/lib/surahs";
 import { WordMaskingContainer } from "@/components/quran/WordMaskingContainer";
 import { AyahAudioEngine } from "@/components/quran/AyahAudioEngine";
@@ -337,9 +337,11 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
               <RecitationRecorder
                 surahNumber={surahNumber}
                 ayahNumber={verse.number}
-                masterAudioUrl={`/api/audio/proxy?url=${encodeURIComponent(
-                  everyayahAudioUrl(selectedReciter, surahNumber, verse.number)
-                )}`}
+                masterAudioUrl={proxyAudioUrl(
+                  selectedReciter,
+                  surahNumber,
+                  verse.number
+                )}
               />
             </div>
           </article>

@@ -10,7 +10,7 @@ CREATE TABLE public.profiles (
   full_name TEXT NOT NULL,
   role TEXT CHECK (role IN ('student', 'parent', 'teacher')) DEFAULT 'student',
   target_daily_verses INT DEFAULT 10,
-  preferred_qari TEXT DEFAULT 'murottal_ummi_nahawand',
+  preferred_qari TEXT DEFAULT 'Alafasy_128kbps',
   preferred_script TEXT CHECK (preferred_script IN ('uthmani', 'indopak')) DEFAULT 'indopak',
   preferred_masking_mode TEXT DEFAULT 'full',
   age_group TEXT CHECK (age_group IN ('early_child', 'junior', 'teen_adult')) DEFAULT 'junior',

@@ -2,6 +2,9 @@
 
 import { useRef, useState } from "react";
 import { SURAHS, getSurahMeta } from "@/lib/surahs";
+import { isWebGPUSupported, transcribeClientWhisper } from "@/lib/clientWhisper";
+import { scoreRecitation } from "@/lib/recitationScore";
+import { fetchDynamicSurah } from "@/services/quranDataService";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -88,9 +91,10 @@ export const RecitationVerifier: React.FC = () => {
     await submitAudio(audioBlob);
   };
 
-  const submitAudio = async (audioBlob: Blob) => {
-    setUploading(true);
-    setError(null);
+  const ayahStartFinal = Math.min(ayahStart, ayahEnd);
+  const ayahEndFinal = Math.max(ayahStart, ayahEnd);
+
+  const tryServer = async (audioBlob: Blob): Promise<boolean> => {
     try {
       const form = new FormData();
       form.append("audio", audioBlob, "recording.webm");
@@ -98,18 +102,43 @@ export const RecitationVerifier: React.FC = () => {
         "payload",
         JSON.stringify({
           surah: surahNumber,
-          ayahStart: Math.min(ayahStart, ayahEnd),
-          ayahEnd: Math.max(ayahStart, ayahEnd),
+          ayahStart: ayahStartFinal,
+          ayahEnd: ayahEndFinal,
         })
       );
-
       const res = await fetch("/api/verify", { method: "POST", body: form });
       const json = (await res.json()) as VerifyResult & { error?: string };
-      if (!res.ok || json.error) {
-        setError(json.error ?? "Verifikasi gagal. Coba lagi.");
-        return;
-      }
+      if (!res.ok || json.error) return false;
       setResult(json);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const tryClient = async (audioBlob: Blob): Promise<boolean> => {
+    if (!(await isWebGPUSupported())) return false;
+    const transcribed = await transcribeClientWhisper(audioBlob);
+    if (!transcribed) return false;
+    const data = await fetchDynamicSurah(surahNumber);
+    const expected = data.verses
+      .filter((v) => v.number >= ayahStartFinal && v.number <= ayahEndFinal)
+      .map((v) => v.textArabicUthmani)
+      .join(" ");
+    const { score, verdict } = scoreRecitation(transcribed, expected);
+    setResult({ transcribed, expected, score, verdict });
+    return true;
+  };
+
+  const submitAudio = async (audioBlob: Blob) => {
+    setUploading(true);
+    setError(null);
+    try {
+      if (await tryServer(audioBlob)) return;
+      if (await tryClient(audioBlob)) return;
+      setError(
+        "Verifikasi gagal. Pastikan koneksi internet atau gunakan perangkat dengan dukungan WebGPU."
+      );
     } catch {
       setError("Terjadi kesalahan jaringan saat verifikasi.");
     } finally {

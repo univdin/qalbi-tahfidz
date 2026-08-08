@@ -135,6 +135,7 @@ export function formatAyahFile(surah: number, ayah: number): string {
 
 export const RECITERS = [
   { id: "Alafasy_128kbps", name: "Misyari Rasyid Al-'Afasi" },
+  { id: "Husary_Muallim_128kbps", name: "Mahmud Khalil Al-Husary (Guru/Muallim)" },
   { id: "MaherAlMuaiqly128kbps", name: "Maher Al-Mu'aiqly" },
   { id: "Abdul_Basit_Murattal_128kbps", name: "Abdul Basit (Murattal)" },
 ] as const;
@@ -145,4 +146,13 @@ export function everyayahAudioUrl(
   ayah: number
 ): string {
   return `https://everyayah.com/data/${reciter}/${formatAyahFile(surah, ayah)}.mp3`;
+}
+
+export function proxyAudioUrl(
+  reciter: string,
+  surah: number,
+  ayah: number
+): string {
+  const primary = everyayahAudioUrl(reciter, surah, ayah);
+  return `/api/audio/proxy?url=${encodeURIComponent(primary)}`;
 }

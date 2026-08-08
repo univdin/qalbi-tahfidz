@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { href: "/reader", label: "Murottal" },
+  { href: "/ummi", label: "Metode Ummi" },
   { href: "/deck", label: "Hafalan" },
   { href: "/dashboard", label: "Pantauan" },
   { href: "/verify", label: "Verifikasi" },

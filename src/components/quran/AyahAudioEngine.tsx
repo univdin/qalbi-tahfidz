@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useAudioStore } from "@/store/useAudioStore";
-import { everyayahAudioUrl } from "@/lib/surahs";
+import { getSurahMeta, proxyAudioUrl } from "@/lib/surahs";
 
 interface AyahAudioEngineProps {
   surahNumber: number;
@@ -13,9 +13,10 @@ interface AyahAudioEngineProps {
 }
 
 /**
- * Memutar satu ayat dari everyayah.com per-ayah mp3 secara berulang
- * (repeatPerAyah) dengan jeda hening otomatis (delayRatio) — metode Ummi.
- * Setelah repeat terpenuhi, otomatis lanjut ke ayat berikutnya.
+ * Memutar satu ayat (via proxy everyayah) secara berulang
+ * (repeatPerAyah) dengan jeda hening otomatis (delayRatio).
+ * Setelah repeat terpenuhi, otomatis lanjut ke ayat berikutnya (atau berhenti
+ * bila itu ayat terakhir).
  */
 export const AyahAudioEngine: React.FC<AyahAudioEngineProps> = ({
   surahNumber,
@@ -37,20 +38,22 @@ export const AyahAudioEngine: React.FC<AyahAudioEngineProps> = ({
     setAudioState,
     incrementAyahRepeat,
     resetAyahRepeat,
+    nextAyah,
   } = useAudioStore();
 
   const isActive = isPlaying && currentAyahIndex === ayahIndex;
+  const surahMeta = getSurahMeta(surahNumber);
+  const isLastAyah = ayahIndex >= (surahMeta?.ayahCount ?? 0) - 1;
 
   useEffect(() => {
     if (!isActive) return;
     if (currentAyahRepeat >= repeatPerAyah) return;
 
-    const url = `/api/audio/proxy?url=${encodeURIComponent(
-      everyayahAudioUrl(reciter, surahNumber, ayahNumber)
-    )}`;
+    const url = proxyAudioUrl(reciter, surahNumber, ayahNumber);
     const audio = new Audio(url);
     audioRef.current = audio;
     audio.playbackRate = playbackRate;
+    audio.preload = "auto";
 
     const playCurrent = () => {
       audio.play().catch(() => {
@@ -111,11 +114,29 @@ export const AyahAudioEngine: React.FC<AyahAudioEngineProps> = ({
   }, [currentAyahIndex, ayahIndex]);
 
   useEffect(() => {
-    if (currentAyahRepeat >= repeatPerAyah && isPlaying && currentAyahIndex === ayahIndex) {
+    if (
+      currentAyahRepeat >= repeatPerAyah &&
+      isPlaying &&
+      currentAyahIndex === ayahIndex
+    ) {
       resetAyahRepeat();
-      setAudioState({ isPlaying: false, isSilenceGap: false });
+      if (isLastAyah) {
+        setAudioState({ isPlaying: false, isSilenceGap: false });
+      } else {
+        nextAyah();
+      }
     }
-  }, [currentAyahRepeat, repeatPerAyah, isPlaying, currentAyahIndex, ayahIndex, resetAyahRepeat, setAudioState]);
+  }, [
+    currentAyahRepeat,
+    repeatPerAyah,
+    isPlaying,
+    currentAyahIndex,
+    ayahIndex,
+    isLastAyah,
+    resetAyahRepeat,
+    nextAyah,
+    setAudioState,
+  ]);
 
   return (
     <div

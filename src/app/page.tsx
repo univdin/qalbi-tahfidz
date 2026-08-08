@@ -5,12 +5,26 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-const fiturUtama = [
+interface Fitur {
+  ikon: string;
+  judul: string;
+  deskripsi: string;
+  href?: string;
+}
+
+const fiturUtama: Fitur[] = [
   {
     ikon: "🔊",
     judul: "Murottal Per Ayat",
     deskripsi:
-      "Audio loop per ayat dengan jeda hening otomatis ala Metode Ummi (Nada Nahawand) untuk latihan menirukan mandiri.",
+      "Audio per ayat (qari standar) dengan jeda hening otomatis dan pengulangan berjenjang untuk latihan menirukan mandiri.",
+  },
+  {
+    ikon: "🧒",
+    judul: "Metode Ummi Anak (Juz 30)",
+    deskripsi:
+      "Modul khusus murottal anak dengan nada Metode Ummi/Nahawand (suara anak-anak) plus pemutar sendiri: A-B loop, kecepatan, dan lanjut otomatis.",
+    href: "/ummi",
   },
   {
     ikon: "📖",
@@ -35,12 +49,6 @@ const fiturUtama = [
     judul: "Dashboard Pantauan",
     deskripsi:
       "Orang tua & guru melihat progres hafalan anak secara real-time: kartu SRS, streak, dan ringkasan prestasi.",
-  },
-  {
-    ikon: "📴",
-    judul: "PWA Offline",
-    deskripsi:
-      "Surah yang sudah dibuka tetap bisa dibaca tanpa koneksi internet — install dari browser dalam sekali klik.",
   },
 ];
 
@@ -133,10 +141,10 @@ export default function Home() {
             Platform hafalan Al-Qur&apos;an untuk anak & keluarga
           </h1>
           <p className="max-w-2xl text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Web app yang menggabungkan murottal per ayat (Metode Ummi / Nada
-            Nahawand), pengulangan Tikrar, dan penjadwalan ulangan FSRS. Baca
-            langsung tanpa daftar — buat akun hanya bila ingin menyimpan progres
-            hafalan.
+            Web app yang menggabungkan murottal per ayat, pengulangan Tikrar,
+            penjadwalan ulangan FSRS, plus modul khusus Metode Ummi — murottal
+            anak Juz 30 (Nada Nahawand). Baca langsung tanpa daftar — buat akun
+            hanya bila ingin menyimpan progres hafalan.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Link
@@ -146,10 +154,10 @@ export default function Home() {
               Buka Murottal — Gratis
             </Link>
             <Link
-              href="/auth/signup"
+              href="/ummi"
               className="flex h-12 items-center justify-center rounded-full border border-zinc-300 px-6 font-semibold text-zinc-900 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-50 dark:hover:bg-zinc-900"
             >
-              Buat Akun untuk Menyimpan Progres
+              Murottal Anak (Metode Ummi)
             </Link>
           </div>
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -158,22 +166,32 @@ export default function Home() {
         </section>
 
         <section id="fitur" className="grid gap-4 py-10 sm:grid-cols-2 lg:grid-cols-3">
-          {fiturUtama.map((f) => (
-            <div
-              key={f.judul}
-              className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
-            >
-              <span className="text-2xl" aria-hidden>
-                {f.ikon}
-              </span>
-              <h2 className="mt-3 text-lg font-bold text-zinc-900 dark:text-zinc-50">
-                {f.judul}
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-                {f.deskripsi}
-              </p>
-            </div>
-          ))}
+          {fiturUtama.map((f) => {
+            const content = (
+              <>
+                <span className="text-2xl" aria-hidden>
+                  {f.ikon}
+                </span>
+                <h2 className="mt-3 text-lg font-bold text-zinc-900 dark:text-zinc-50">
+                  {f.judul}
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+                  {f.deskripsi}
+                </p>
+              </>
+            );
+            const className =
+              "block rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition-colors hover:border-emerald-300 dark:border-zinc-800 dark:bg-zinc-900";
+            return f.href ? (
+              <Link key={f.judul} href={f.href} className={className}>
+                {content}
+              </Link>
+            ) : (
+              <div key={f.judul} className={className}>
+                {content}
+              </div>
+            );
+          })}
         </section>
 
         <section id="cara-kerja" className="py-10">

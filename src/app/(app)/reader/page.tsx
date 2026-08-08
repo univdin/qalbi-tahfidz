@@ -10,14 +10,14 @@ const JUZ_30_START = 78;
 export const metadata: Metadata = {
   title: "Pilih Surah — QalbiTahfidz",
   description:
-    "Daftar 114 surah Al-Qur'an untuk dibaca dan dihafal anak: mulai dari Juz Amma (Juz 30) atau pilih surah lain. Audio per ayat, mushaf Uthmani/IndoPak, dan terjemahan Indonesia.",
+    "Daftar 114 surah Al-Qur'an untuk dibaca dan dihafal anak: mulai dari Juz Amma (Juz 30) atau pilih surah lain. Murottal per ayat, mushaf Uthmani/IndoPak, dan terjemahan Indonesia.",
   alternates: { canonical: "/reader" },
   openGraph: {
     type: "website",
     url: `${SITE_URL}/reader`,
     title: "Pilih Surah — QalbiTahfidz",
     description:
-      "Daftar 114 surah Al-Qur'an untuk dibaca dan dihafal anak dengan Metode Ummi, Tikrar, dan FSRS.",
+      "Daftar 114 surah Al-Qur'an untuk dibaca dan dihafal anak dengan murottal per ayat, Tikrar, dan FSRS.",
   },
 };
 

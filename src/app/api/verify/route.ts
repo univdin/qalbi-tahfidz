@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { scoreRecitation } from "@/lib/recitationScore";
+import { fetchExpectedAyahText } from "@/lib/quranTextApi";
 
 export const runtime = "nodejs";
 
@@ -8,61 +10,6 @@ interface VerifyRequest {
   surah: number;
   ayahStart: number;
   ayahEnd: number;
-}
-
-const DIACRITICS = /[\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g;
-
-function stripTashkeel(text: string): string {
-  return text
-    .replace(DIACRITICS, "")
-    .replace(/[^\u0621-\u063A\u0641-\u064A\u0609\u060A\s]/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function wordOverlapScore(transcribed: string, expected: string): number {
-  const transcribedWords = stripTashkeel(transcribed).split(" ");
-  const expectedWords = stripTashkeel(expected).split(" ");
-
-  if (expectedWords.length === 0) return 0;
-  if (transcribedWords.length === 0) return 0;
-
-  const expectedSet = new Set(expectedWords);
-  let matched = 0;
-  for (const word of transcribedWords) {
-    if (word && expectedSet.has(word)) matched += 1;
-  }
-
-  const precision = matched / transcribedWords.length;
-  const recall = matched / expectedWords.length;
-  if (precision + recall === 0) return 0;
-  return Math.round((2 * ((precision * recall) / (precision + recall))) * 100);
-}
-
-interface GadingVerseDto {
-  number: { inSurah: number };
-  text: { arab: string };
-}
-
-interface GadingResponse {
-  data: {
-    verses: GadingVerseDto[];
-  };
-}
-
-async function fetchSurahArabic(surah: number): Promise<Map<number, string>> {
-  const res = await fetch(`https://api.quran.gading.dev/surah/${surah}`, {
-    next: { revalidate: 86400 },
-  });
-  if (!res.ok) {
-    throw new Error("Gagal mengambil teks surah dari sumber data.");
-  }
-  const json = (await res.json()) as GadingResponse;
-  const map = new Map<number, string>();
-  for (const v of json.data.verses) {
-    map.set(v.number.inSurah, v.text.arab);
-  }
-  return map;
 }
 
 export async function POST(request: NextRequest) {
@@ -122,21 +69,10 @@ export async function POST(request: NextRequest) {
     const aiJson = (await aiRes.json()) as { result?: { text?: string } };
     const transcribed = aiJson.result?.text?.trim() ?? "";
 
-    const surahText = await fetchSurahArabic(surah);
-    const expectedParts: string[] = [];
-    for (let i = ayahStart; i <= ayahEnd; i++) {
-      const text = surahText.get(i);
-      if (text) expectedParts.push(text);
-    }
-    const expected = expectedParts.join(" ");
-    const score = wordOverlapScore(transcribed, expected);
+    const expected = await fetchExpectedAyahText(surah, ayahStart, ayahEnd);
+    const { score, verdict } = scoreRecitation(transcribed, expected);
 
-    return NextResponse.json({
-      transcribed,
-      expected,
-      score,
-      verdict: score >= 80 ? "lancar" : score >= 60 ? "cukup" : "perlu_ulang",
-    });
+    return NextResponse.json({ transcribed, expected, score, verdict });
   } catch (err) {
     console.error("Verify error:", err);
     return NextResponse.json(

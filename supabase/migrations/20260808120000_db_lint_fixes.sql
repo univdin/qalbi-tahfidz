@@ -109,3 +109,6 @@ CREATE INDEX IF NOT EXISTS idx_parent_child_links_parent_id ON public.parent_chi
 CREATE INDEX IF NOT EXISTS idx_parent_child_links_child_id ON public.parent_child_links(child_id);
 CREATE INDEX IF NOT EXISTS idx_user_collections_user_id ON public.user_collections(user_id);
 CREATE INDEX IF NOT EXISTS idx_hafalan_mistake_logs_user_id ON public.hafalan_mistake_logs(user_id);
+
+-- 5) Default qari valid (reciter lama murottal_ummi_nahawand tidak ada di everyayah)
+ALTER TABLE public.profiles ALTER COLUMN preferred_qari SET DEFAULT 'Alafasy_128kbps';

@@ -1,5 +1,6 @@
-import { SURAHS } from "@/lib/surahs";
+import { getSurahMeta, SURAHS } from "@/lib/surahs";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
+import { UMMI_JUZ30, UMMI_SOURCE } from "@/lib/ummiAudio";
 
 export const dynamic = "force-static";
 
@@ -8,6 +9,13 @@ function surahLines(): string {
     (s) =>
       `- [Surah ${s.nameId}](/reader/${s.number}): ${s.ayahCount} ayat, diturunkan di ${s.revelation} (${s.nameArabic})`
   ).join("\n");
+}
+
+function ummiLines(): string {
+  return UMMI_JUZ30.map((entry) => {
+    const meta = getSurahMeta(entry.surah);
+    return `- [Surah ${meta?.nameId ?? entry.surah}](/ummi): ${meta?.ayahCount ?? ""} ayat — murottal anak Metode Ummi (Nada Nahawand)`;
+  }).join("\n");
 }
 
 export function GET() {
@@ -23,7 +31,8 @@ Akses cepat: ${SITE_URL}
 
 ## Key Features
 
-- **Audio per Ayat**: pemutar audio per-ayat dengan jeda hening otomatis untuk latihan menirukan (Metode Ummi / Nada Nahawand).
+- **Murottal Per Ayat**: pemutar audio per-ayat (qari standar) dengan jeda hening otomatis untuk latihan menirukan.
+- **Metode Ummi Anak (Juz 30)**: modul khusus murottal anak dengan nada Metode Ummi/Nahawand (suara anak-anak), pemutar sendiri, A-B loop, dan lanjut otomatis antar surah.
 - **Tikrar (N×M)**: pengulangan berjenjang — N kali per ayat, M kali per blok/halaman.
 - **FSRS**: penjadwalan ulangan Sabaq, Sabqi & Manzil berbasis stabilitas memori.
 - **Mushaf Dwi-Skrip**: teks Uthmani & IndoPak standar Kemenag RI dengan terjemahan Indonesia.
@@ -32,13 +41,20 @@ Akses cepat: ${SITE_URL}
 
 ## Key Pages
 
-- [Beranda](/) — pengenalan aplikasi dan metode.
+- [Beranda](/) — pengenalan platform dan metode.
 - [Pilih Surah](/reader) — daftar seluruh 114 surah untuk dibaca & dihafal.
+- [Metode Ummi — Murottal Anak Juz 30](/ummi) — modul khusus murottal anak (Nada Nahawand).
 - [Masuk](/auth/login) & [Daftar](/auth/signup) — akun orang tua/guru/anak.
 
 ## Surah (114)
 
 ${surahLines()}
+
+## Metode Ummi — Murottal Anak Juz 30 (37 surah)
+
+${ummiLines()}
+
+Sumber audio modul Metode Ummi: ${UMMI_SOURCE.creator} · ${UMMI_SOURCE.url} (${UMMI_SOURCE.year}).
 
 ## Halaman yang tidak perlu diindeks LLM
 

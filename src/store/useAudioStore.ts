@@ -39,7 +39,7 @@ export const useAudioStore = create<AudioStoreState>((set) => ({
   currentAyahRepeat: 0,
   currentAyahIndex: 0,
   playbackRate: 1.0,
-  selectedReciter: "murottal_ummi_nahawand",
+  selectedReciter: "Alafasy_128kbps",
 
   agePersona: "junior",
   maskingMode: "full",

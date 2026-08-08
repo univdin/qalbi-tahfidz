@@ -10,8 +10,16 @@ const ALLOWED_HOSTS = [
   "tarteel.nyc3.cdn.digitaloceanspaces.com",
 ];
 
+function isAllowed(url: URL): boolean {
+  return ALLOWED_HOSTS.some(
+    (host) => url.hostname === host || url.hostname.endsWith(`.${host}`)
+  );
+}
+
 export async function GET(request: NextRequest) {
   const audioUrl = request.nextUrl.searchParams.get("url");
+  const fallbackUrl = request.nextUrl.searchParams.get("fallback");
+
   if (!audioUrl) {
     return new NextResponse("Missing URL parameter", { status: 400 });
   }
@@ -23,7 +31,7 @@ export async function GET(request: NextRequest) {
     return new NextResponse("Invalid URL parameter", { status: 400 });
   }
 
-  if (!ALLOWED_HOSTS.some((host) => parsed.hostname === host || parsed.hostname.endsWith(`.${host}`))) {
+  if (!isAllowed(parsed)) {
     return new NextResponse("Host not authorized", { status: 403 });
   }
 
@@ -33,8 +41,34 @@ export async function GET(request: NextRequest) {
     fetchHeaders["Range"] = rangeHeader;
   }
 
+  const tryFetch = async (target: string) => {
+    const res = await fetch(target, {
+      headers: fetchHeaders,
+      signal: AbortSignal.timeout(20000),
+    });
+    if (!res.ok) return null;
+    return res;
+  };
+
   try {
-    const response = await fetch(audioUrl, { headers: fetchHeaders });
+    let response = await tryFetch(audioUrl);
+
+    if (!response && fallbackUrl) {
+      let fallbackParsed: URL;
+      try {
+        fallbackParsed = new URL(fallbackUrl);
+      } catch {
+        fallbackParsed = parsed;
+      }
+      if (isAllowed(fallbackParsed)) {
+        response = await tryFetch(fallbackUrl);
+      }
+    }
+
+    if (!response) {
+      return new NextResponse("Audio source unavailable", { status: 502 });
+    }
+
     const proxyHeaders = new Headers();
     proxyHeaders.set("Content-Type", response.headers.get("content-type") || "audio/mpeg");
     proxyHeaders.set("Accept-Ranges", "bytes");
