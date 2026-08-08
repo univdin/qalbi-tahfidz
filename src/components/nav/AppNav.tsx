@@ -11,6 +11,8 @@ const NAV_ITEMS = [
   { href: "/reader", label: "Murottal" },
   { href: "/ummi", label: "Metode Ummi" },
   { href: "/cari", label: "Cari" },
+  { href: "/quest", label: "Quest" },
+  { href: "/mutashabihat", label: "Ayat Mirip" },
   { href: "/deck", label: "Hafalan" },
   { href: "/dashboard", label: "Pantauan" },
   { href: "/verify", label: "Verifikasi" },
@@ -38,7 +40,7 @@ export function AppNav() {
         <Link href="/" className="font-semibold tracking-tight">
           Qalbi<span className="text-emerald-600">Tahfidz</span>
         </Link>
-        <div className="hidden items-center gap-1 sm:flex">
+        <div className="hidden items-center gap-1 overflow-x-auto sm:flex">
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.href}

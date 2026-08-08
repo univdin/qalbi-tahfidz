@@ -24,6 +24,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.9,
     },
+    {
+      url: `${SITE_URL}/mutashabihat`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.6,
+    },
   ];
 
   const surahRoutes: MetadataRoute.Sitemap = SURAHS.map((s) => ({

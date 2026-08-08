@@ -45,6 +45,7 @@ Akses cepat: ${SITE_URL}
 - [Pilih Surah](/reader) — daftar seluruh 114 surah untuk dibaca & dihafal.
 - [Metode Ummi — Murottal Anak Juz 30](/ummi) — modul khusus murottal anak (Nada Nahawand).
 - [Cari Ayat](/cari) — pencarian ayat dengan teks Arab/lemma/akar kata (API: /api/quran/search).
+- [Mutashabihat — Ayat Mirip](/mutashabihat) — bandingkan ayat mirip dengan penyorotan perbedaan kata.
 - [Masuk](/auth/login) & [Daftar](/auth/signup) — akun orang tua/guru/anak.
 
 ## Surah (114)
@@ -62,6 +63,7 @@ Sumber audio modul Metode Ummi: ${UMMI_SOURCE.creator} · ${UMMI_SOURCE.url} (${
 - [/dashboard](/dashboard) — area pribadi orang tua/guru.
 - [/deck](/deck) — jadwal hafalan pribadi.
 - [/verify](/verify) — verifikasi bacaan pribadi.
+- [/quest](/quest) — progres quest hafalan pribadi.
 
 ## Contact & Repo
 
