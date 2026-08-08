@@ -11,6 +11,8 @@ import {
 } from "@/lib/surahs";
 import { WordMaskingContainer } from "@/components/quran/WordMaskingContainer";
 import { TajweedText } from "@/components/quran/TajweedText";
+import { TajweedLegend } from "@/components/quran/TajweedLegend";
+import { MakhrajPopup } from "@/components/quran/MakhrajPopup";
 import { AyahAudioEngine } from "@/components/quran/AyahAudioEngine";
 import { RecitationRecorder } from "@/components/quran/RecitationRecorder";
 import {
@@ -19,6 +21,7 @@ import {
   getTajweedData,
   type TajweedRange,
 } from "@/lib/tajweed";
+import { firstArabicChar, getZoneForLetter, type MakhrajZone } from "@/lib/makhraj";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -50,6 +53,11 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
     map: Map<number, TajweedRange[]>;
     tanzil: Map<number, string>;
   } | null>(null);
+  const [makhrajZone, setMakhrajZone] = useState<MakhrajZone | null>(null);
+
+  const openMakhraj = (char: string) => {
+    setMakhrajZone(getZoneForLetter(char));
+  };
 
   const {
     isPlaying,
@@ -311,6 +319,8 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
         </CardContent>
       </Card>
 
+      <TajweedLegend />
+
       <div className="flex items-center gap-2 text-xs text-slate-400">
         <span className="rounded-full bg-emerald-50 px-3 py-1 font-medium text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
           Audio: {audioSourceLabel}
@@ -351,6 +361,7 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
                 }
                 ranges={tajweedState.map.get(verse.number) ?? []}
                 fontSize="large"
+                onCharClick={openMakhraj}
               />
             ) : (
               <WordMaskingContainer
@@ -359,6 +370,7 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
                 script={preferredScript}
                 mode={maskingMode}
                 fontSize="large"
+                onWordClick={(word) => openMakhraj(firstArabicChar(word))}
               />
             )}
 
@@ -407,6 +419,10 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
           </article>
         ))}
       </div>
+
+      {makhrajZone && (
+        <MakhrajPopup zone={makhrajZone} onClose={() => setMakhrajZone(null)} />
+      )}
     </div>
   );
 };

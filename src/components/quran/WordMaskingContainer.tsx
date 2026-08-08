@@ -9,6 +9,7 @@ interface Props {
   script?: QuranScript;
   mode: MaskingMode;
   fontSize?: "large" | "medium" | "small";
+  onWordClick?: (word: string) => void;
 }
 
 export const WordMaskingContainer: React.FC<Props> = ({
@@ -17,6 +18,7 @@ export const WordMaskingContainer: React.FC<Props> = ({
   script = "indopak",
   mode,
   fontSize = "large",
+  onWordClick,
 }) => {
   const activeText =
     script === "indopak" && textIndopak ? textIndopak : textUthmani;
@@ -25,6 +27,11 @@ export const WordMaskingContainer: React.FC<Props> = ({
 
   const toggle = (idx: number) => {
     setRevealed((prev) => ({ ...prev, [idx]: !prev[idx] }));
+  };
+
+  const handleWordClick = (idx: number, word: string) => {
+    toggle(idx);
+    onWordClick?.(word);
   };
 
   const stripDiacritics = (word: string) =>
@@ -55,7 +62,7 @@ export const WordMaskingContainer: React.FC<Props> = ({
           <button
             key={idx}
             type="button"
-            onClick={() => toggle(idx)}
+            onClick={() => handleWordClick(idx, word)}
             aria-pressed={isRevealed}
             aria-label={
               isRevealed
