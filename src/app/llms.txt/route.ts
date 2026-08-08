@@ -47,6 +47,9 @@ Akses cepat: ${SITE_URL}
 - [Cari Ayat](/cari) — pencarian ayat dengan teks Arab/lemma/akar kata (API: /api/quran/search).
 - [Mutashabihat — Ayat Mirip](/mutashabihat) — bandingkan ayat mirip dengan penyorotan perbedaan kata.
 - [Kisah dalam Al-Qur'an](/kisah) — peta interaktif kisah para nabi dengan rujukan ayat.
+- [Baca per Juz](/juz) & [per Halaman](/halaman) — mode baca mushaf.
+- [Artikel & Amalan](/artikel) — keutamaan amalan & ayat pilihan (Ayat Kursi, Seribu Dinar, dll).
+- [Amalan Rutin](/amalan) — Yasin & Tahlil, Al-Kahfi, Al-Waqi'ah, Al-Mulk.
 - [Masuk](/auth/login) & [Daftar](/auth/signup) — akun orang tua/guru/anak.
 
 ## Surah (114)

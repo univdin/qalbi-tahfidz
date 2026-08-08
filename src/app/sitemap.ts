@@ -48,6 +48,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.6,
     },
+    {
+      url: `${SITE_URL}/artikel`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.6,
+    },
+    {
+      url: `${SITE_URL}/amalan`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.6,
+    },
   ];
 
   const surahRoutes: MetadataRoute.Sitemap = SURAHS.map((s) => ({
@@ -57,5 +69,30 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...staticRoutes, ...surahRoutes];
+  const articleRoutes: MetadataRoute.Sitemap = [
+    "ayat-kursi",
+    "seribu-dinar",
+    "nuzulul-quran",
+    "keutamaan-al-mulk",
+    "keutamaan-al-waqiah",
+  ].map((slug) => ({
+    url: `${SITE_URL}/artikel/${slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
+  const amalanRoutes: MetadataRoute.Sitemap = [
+    "yasin-tahlil",
+    "al-kahfi",
+    "al-waqiah",
+    "al-mulk",
+  ].map((slug) => ({
+    url: `${SITE_URL}/amalan/${slug}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.6,
+  }));
+
+  return [...staticRoutes, ...surahRoutes, ...articleRoutes, ...amalanRoutes];
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { UmmiPlayer } from "@/components/ummi/UmmiPlayer";
+import { DownloadJuz30 } from "@/components/ummi/DownloadJuz30";
 import { absoluteUrl, SITE_URL } from "@/lib/site";
 import { getSurahMeta, SURAHS } from "@/lib/surahs";
 import { UMMI_JUZ30, UMMI_SOURCE } from "@/lib/ummiAudio";
@@ -72,6 +73,8 @@ export default function UmmiPage() {
       </div>
 
       <UmmiPlayer />
+
+      <DownloadJuz30 />
 
       <p className="text-xs leading-5 text-slate-400 dark:text-slate-500">
         Sumber audio:{" "}
