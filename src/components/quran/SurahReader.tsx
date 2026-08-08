@@ -11,11 +11,12 @@ import {
 } from "@/lib/surahs";
 import { WordMaskingContainer } from "@/components/quran/WordMaskingContainer";
 import { TajweedText } from "@/components/quran/TajweedText";
-import { TajweedLegend } from "@/components/quran/TajweedLegend";
 import { MakhrajPopup } from "@/components/quran/MakhrajPopup";
+import { TajweedLegend } from "@/components/quran/TajweedLegend";
 import { AyahAudioEngine } from "@/components/quran/AyahAudioEngine";
 import { RecitationRecorder } from "@/components/quran/RecitationRecorder";
 import { BookmarkButton } from "@/components/quran/BookmarkButton";
+import { AyahDetailSheet, type VerseDetail } from "@/components/quran/AyahDetailSheet";
 import { useLastRead } from "@/hooks/useLastRead";
 import {
   fetchTanzilUthmani,
@@ -47,7 +48,7 @@ interface SurahReaderProps {
 export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
   const [data, setData] = useState<DynamicSurahData | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [showTranslation, setShowTranslation] = useState(true);
+  const [readingMode, setReadingMode] = useState<"hafalan" | "tadabbur">("hafalan");
   const [showTafsir, setShowTafsir] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [tajweedEnabled, setTajweedEnabled] = useState(false);
@@ -58,8 +59,27 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
   } | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const [makhrajZone, setMakhrajZone] = useState<MakhrajZone | null>(null);
+  const [detail, setDetail] = useState<VerseDetail | null>(null);
+  const [ruleInfo, setRuleInfo] = useState<{ label: string; desc: string } | null>(null);
+  const [showLegend, setShowLegend] = useState(false);
   const { saveLastRead } = useLastRead();
   const savedReadRef = useRef<number | null>(null);
+
+  const {
+    isPlaying,
+    repeatPerAyah,
+    delayRatio,
+    currentAyahIndex,
+    selectedReciter,
+    agePersona,
+    maskingMode,
+    preferredScript,
+    targetDailyVerses,
+    fontScale,
+    setAudioState,
+    setPersonalization,
+    nextAyah,
+  } = useAudioStore();
 
   const openMakhraj = (char: string) => {
     setMakhrajZone(getZoneForLetter(char));
@@ -72,20 +92,22 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
     }
   }, [isLoaded, surahNumber, saveLastRead]);
 
-  const {
-    isPlaying,
-    repeatPerAyah,
-    delayRatio,
-    currentAyahIndex,
-    selectedReciter,
-    agePersona,
-    maskingMode,
-    preferredScript,
-    targetDailyVerses,
-    setAudioState,
-    setPersonalization,
-    nextAyah,
-  } = useAudioStore();
+  useEffect(() => {
+    return () => {
+      setAudioState({
+        isPlaying: false,
+        activeSurah: null,
+        isSilenceGap: false,
+      });
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!ruleInfo) return;
+    const t = setTimeout(() => setRuleInfo(null), 3000);
+    return () => clearTimeout(t);
+  }, [ruleInfo]);
 
   const surahMeta = getSurahMeta(surahNumber);
 
@@ -128,8 +150,8 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
   }, [tajweedEnabled, surahNumber]);
 
   const handleStart = useCallback(() => {
-    setAudioState({ isPlaying: true, currentAyahIndex: 0, currentAyahRepeat: 0, isSilenceGap: false });
-  }, [setAudioState]);
+    setAudioState({ isPlaying: true, currentAyahIndex: 0, currentAyahRepeat: 0, isSilenceGap: false, activeSurah: surahNumber });
+  }, [surahNumber, setAudioState]);
 
   const handleStop = useCallback(() => {
     setAudioState({ isPlaying: false, isSilenceGap: false });
@@ -334,19 +356,54 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
                     <span>Target: {targetDailyVerses} ayat</span>
                     <button
                       type="button"
-                      onClick={() => setShowTranslation((v) => !v)}
-                      className="text-emerald-600 underline-offset-2 hover:underline"
-                    >
-                      {showTranslation ? "Sembunyikan" : "Tampilkan"} terjemahan
-                    </button>
-                    <button
-                      type="button"
                       onClick={() => setShowTafsir((v) => !v)}
                       className="text-emerald-600 underline-offset-2 hover:underline"
                     >
                       {showTafsir ? "Sembunyikan" : "Tampilkan"} tafsir
                     </button>
                   </div>
+                </div>
+
+                <div className="flex flex-col gap-2 sm:col-span-2">
+                  <label className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                    Mode Bacaan
+                  </label>
+                  <div className="grid grid-cols-2 gap-1 rounded-xl bg-zinc-100 p-1 dark:bg-zinc-800">
+                    {(["hafalan", "tadabbur"] as const).map((m) => (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => setReadingMode(m)}
+                        className={`rounded-lg px-3 py-2 text-sm font-semibold transition-colors ${
+                          readingMode === m
+                            ? "bg-white text-emerald-700 shadow-sm dark:bg-zinc-700 dark:text-emerald-300"
+                            : "text-zinc-500 dark:text-zinc-400"
+                        }`}
+                      >
+                        {m === "hafalan" ? "🎯 Hafalan" : "📖 Tadabbur"}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-zinc-400 dark:text-zinc-500">
+                    Hafalan: fokus teks Arab (ketuk ayat untuk terjemahan/tafsir).
+                    Tadabbur: terjemahan tampil langsung.
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-2 sm:col-span-2">
+                  <label className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                    Ukuran Teks: {Math.round(fontScale * 100)}%
+                  </label>
+                  <input
+                    type="range"
+                    min={0.85}
+                    max={1.5}
+                    step={0.05}
+                    value={fontScale}
+                    onChange={(e) => setAudioState({ fontScale: Number(e.target.value) })}
+                    className="accent-emerald-600"
+                    aria-label="Skala ukuran teks Arab"
+                  />
                 </div>
 
                 <div className="sm:col-span-2">
@@ -372,9 +429,14 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
         </div>
       )}
 
-      <TajweedLegend />
-
       <div className="flex items-center gap-2 text-xs text-slate-400">
+        <button
+          type="button"
+          onClick={() => setShowLegend(true)}
+          className="rounded-full bg-emerald-50 px-3 py-1 font-medium text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950 dark:text-emerald-300 dark:hover:bg-emerald-900"
+        >
+          ℹ️ Legenda Tajwid
+        </button>
         <span className="rounded-full bg-emerald-50 px-3 py-1 font-medium text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
           Audio: {audioSourceLabel}
         </span>
@@ -414,6 +476,8 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
                 }
                 ranges={tajweedState.map.get(verse.number) ?? []}
                 fontSize="large"
+                scale={fontScale}
+                onRuleInfo={setRuleInfo}
                 onCharClick={openMakhraj}
               />
             ) : (
@@ -423,11 +487,12 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
                 script={preferredScript}
                 mode={maskingMode}
                 fontSize="large"
+                scale={fontScale}
                 onWordClick={(word) => openMakhraj(firstArabicChar(word))}
               />
             )}
 
-            {showTranslation && verse.translationId && (
+            {readingMode === "tadabbur" && verse.translationId && (
               <>
                 <Separator className="my-4" />
                 <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">
@@ -436,7 +501,7 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
               </>
             )}
 
-            {showTafsir && verse.tafsirId && (
+            {readingMode === "tadabbur" && showTafsir && verse.tafsirId && (
               <div className="mt-3 rounded-lg bg-emerald-50/60 p-3 dark:bg-emerald-950/30">
                 <p className="mb-1 text-xs font-bold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
                   Tafsir (Kemenag RI)
@@ -457,6 +522,7 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
                     currentAyahIndex: idx,
                     currentAyahRepeat: 0,
                     isSilenceGap: false,
+                    activeSurah: surahNumber,
                   });
                 }}
               >
@@ -480,6 +546,20 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
                 )}
               />
               <BookmarkButton surah={surahNumber} ayah={verse.number} />
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() =>
+                  setDetail({
+                    surah: surahNumber,
+                    ayah: verse.number,
+                    translation: verse.translationId,
+                    tafsir: verse.tafsirId,
+                  })
+                }
+              >
+                📄 Terjemahan
+              </Button>
             </div>
           </article>
         ))}
@@ -487,6 +567,43 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
 
       {makhrajZone && (
         <MakhrajPopup zone={makhrajZone} onClose={() => setMakhrajZone(null)} />
+      )}
+
+      <AyahDetailSheet detail={detail} onClose={() => setDetail(null)} />
+
+      {ruleInfo && (
+        <div className="pointer-events-none fixed inset-x-0 bottom-[120px] z-[60] flex justify-center px-4">
+          <div className="max-w-sm rounded-xl border border-emerald-200 bg-white/95 px-4 py-2.5 text-center shadow-lg backdrop-blur dark:border-emerald-900 dark:bg-zinc-900/95">
+            <p className="text-xs font-bold text-emerald-700 dark:text-emerald-300">
+              {ruleInfo.label}
+            </p>
+            <p className="text-[11px] leading-4 text-zinc-500 dark:text-zinc-400">
+              {ruleInfo.desc}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {showLegend && (
+        <div
+          className="fixed inset-0 z-[65] flex items-end justify-center bg-black/40 backdrop-blur-sm"
+          onClick={() => setShowLegend(false)}
+        >
+          <div
+            className="max-h-[70vh] w-full overflow-y-auto rounded-t-3xl bg-white p-5 pb-8 dark:bg-zinc-900"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+            <TajweedLegend />
+            <button
+              type="button"
+              onClick={() => setShowLegend(false)}
+              className="mt-4 w-full rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-700"
+            >
+              Tutup
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

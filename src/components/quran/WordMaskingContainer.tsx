@@ -10,6 +10,7 @@ interface Props {
   mode: MaskingMode;
   fontSize?: "large" | "medium" | "small";
   onWordClick?: (word: string) => void;
+  scale?: number;
 }
 
 export const WordMaskingContainer: React.FC<Props> = ({
@@ -19,6 +20,7 @@ export const WordMaskingContainer: React.FC<Props> = ({
   mode,
   fontSize = "large",
   onWordClick,
+  scale,
 }) => {
   const activeText =
     script === "indopak" && textIndopak ? textIndopak : textUthmani;
@@ -44,6 +46,8 @@ export const WordMaskingContainer: React.FC<Props> = ({
         ? "text-3xl leading-relaxed"
         : "text-2xl leading-normal";
 
+  const baseFont = fontSize === "large" ? 2.25 : fontSize === "medium" ? 1.875 : 1.5;
+
   const fontFamily = script === "indopak" ? "font-indopak" : "font-arabic";
 
   return (
@@ -51,6 +55,7 @@ export const WordMaskingContainer: React.FC<Props> = ({
       dir="rtl"
       lang="ar"
       className={`flex flex-wrap gap-3 ${fontFamily} ${fontClasses}`}
+      style={scale ? { fontSize: `${baseFont * scale}rem`, lineHeight: 2 } : undefined}
       role="group"
       aria-label="Teks ayat dengan mode masking"
     >

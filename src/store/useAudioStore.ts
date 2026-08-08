@@ -13,6 +13,10 @@ interface AudioStoreState {
   currentAyahIndex: number;
   playbackRate: number;
   selectedReciter: string;
+  /** Surah yang sedang diputar (untuk Floating Player persisten). */
+  activeSurah: number | null;
+  /** Skala ukuran teks Arab (1 = default). */
+  fontScale: number;
 
   agePersona: AgePersona;
   maskingMode: MaskingMode;
@@ -40,6 +44,8 @@ export const useAudioStore = create<AudioStoreState>((set) => ({
   currentAyahIndex: 0,
   playbackRate: 1.0,
   selectedReciter: "Alafasy_128kbps",
+  activeSurah: null,
+  fontScale: 1,
 
   agePersona: "junior",
   maskingMode: "full",

@@ -9,6 +9,8 @@ interface Props {
   ranges: TajweedRange[];
   fontSize?: "large" | "medium" | "small";
   onCharClick?: (char: string) => void;
+  onRuleInfo?: (info: { label: string; desc: string }) => void;
+  scale?: number;
 }
 
 const FONT_CLASSES = {
@@ -16,6 +18,8 @@ const FONT_CLASSES = {
   medium: "text-3xl leading-relaxed",
   small: "text-2xl leading-normal",
 };
+
+const BASE_FONT: Record<string, number> = { large: 2.25, medium: 1.875, small: 1.5 };
 
 function clickable(
   content: string,
@@ -44,7 +48,7 @@ function clickable(
  * Render teks Arab dengan highlight warna sesuai aturan tajwid.
  * Indeks range adalah offset codepoint terhadap teks Tanzil Uthmani.
  */
-export function TajweedText({ text, ranges, fontSize = "large", onCharClick }: Props) {
+export function TajweedText({ text, ranges, fontSize = "large", onCharClick, onRuleInfo, scale }: Props) {
   const chars = [...text];
   const sorted = [...ranges].sort((a, b) => a.start - b.start);
 
@@ -73,11 +77,14 @@ export function TajweedText({ text, ranges, fontSize = "large", onCharClick }: P
         key={`${r.rule}-${start}`}
         className="cursor-help"
         style={{ color: rule?.color ?? "#10b981", fontWeight: 700 }}
-        title={rule ? `${rule.label} — ${rule.desc}` : undefined}
         onClick={(e) => {
           e.stopPropagation();
-          const ch = firstArabicChar(seg);
-          if (ch) onCharClick?.(ch);
+          if (rule && onRuleInfo) {
+            onRuleInfo({ label: rule.label, desc: rule.desc });
+          } else {
+            const ch = firstArabicChar(seg);
+            if (ch) onCharClick?.(ch);
+          }
         }}
       >
         {seg}
@@ -103,6 +110,11 @@ export function TajweedText({ text, ranges, fontSize = "large", onCharClick }: P
       dir="rtl"
       lang="ar"
       className={`font-arabic ${FONT_CLASSES[fontSize]}`}
+      style={
+        scale
+          ? { fontSize: `${BASE_FONT[fontSize] * scale}rem`, lineHeight: 2 }
+          : undefined
+      }
       role="note"
       aria-label="Teks ayat dengan penanda tajwid berwarna"
     >

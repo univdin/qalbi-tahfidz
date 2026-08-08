@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/core/supabase/client";
 import { useSession } from "@/hooks/useSession";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
@@ -21,6 +21,20 @@ export function AppNav() {
   const router = useRouter();
   const { user } = useSession();
   const [signingOut, setSigningOut] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const lastY = useRef(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      const delta = y - lastY.current;
+      if (y > 120 && delta > 0) setHidden(true);
+      else if (delta < 0) setHidden(false);
+      lastY.current = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(`${href}/`);
@@ -34,7 +48,12 @@ export function AppNav() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-zinc-200 bg-white/80 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80">
+      <header
+        className={cn(
+          "sticky top-0 z-50 border-b border-zinc-200 bg-white/80 backdrop-blur transition-transform duration-300 dark:border-zinc-800 dark:bg-zinc-950/80",
+          hidden && "-translate-y-full"
+        )}
+      >
         <nav className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2 font-bold tracking-tight">
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-sm font-bold text-white shadow-sm">
