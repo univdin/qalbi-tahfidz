@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getSurahMeta } from "@/lib/surahs";
-import { UMMI_JUZ30, ummiAudioUrl } from "@/lib/ummiAudio";
+import { UMMI_JUZ30, ummiAudioUrl, ummiProxyAudioUrl } from "@/lib/ummiAudio";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Play, Pause, Square, SkipBack, SkipForward, Repeat, FastForward, Pin } from "lucide-react";
@@ -18,6 +18,7 @@ function formatTime(seconds: number): string {
 
 export function UmmiPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const pendingResumeRef = useRef(false);
   const [src, setSrc] = useState<string | null>(null);
   const [currentSurah, setCurrentSurah] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -34,8 +35,9 @@ export function UmmiPlayer() {
   const currentMeta = currentSurah ? getSurahMeta(currentSurah) : null;
 
   const playSurah = useCallback((surah: number) => {
-    const url = ummiAudioUrl(surah);
+    const url = ummiProxyAudioUrl(surah);
     if (!url) return;
+    pendingResumeRef.current = false;
     setCurrentSurah(surah);
     setSrc(url);
     setLoopAB(null);
@@ -114,6 +116,15 @@ export function UmmiPlayer() {
     setLoopAB(b > a ? { a, b } : { a: b, b: a });
     setMarkStep("idle");
   };
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !src) return;
+    if (pendingResumeRef.current) {
+      pendingResumeRef.current = false;
+      void audio.play();
+    }
+  }, [src]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -213,10 +224,13 @@ export function UmmiPlayer() {
             onPlaying={() => setIsLoading(false)}
             onWaiting={() => setIsLoading(true)}
             onError={() => {
-              if (src && !src.includes("/api/audio/proxy")) {
-                const proxyUrl = `/api/audio/proxy?url=${encodeURIComponent(src)}`;
-                setSrc(proxyUrl);
-                return;
+              if (src && src.includes("/api/audio/proxy") && currentSurah) {
+                const direct = ummiAudioUrl(currentSurah);
+                if (direct) {
+                  pendingResumeRef.current = true;
+                  setSrc(direct);
+                  return;
+                }
               }
               setError("Gagal memuat audio. Periksa koneksi lalu coba lagi.");
               setIsLoading(false);

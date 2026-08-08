@@ -79,3 +79,9 @@ export function ummiAudioUrl(surah: number): string | null {
   if (!file) return null;
   return ummiDownloadUrl(file);
 }
+
+export function ummiProxyAudioUrl(surah: number): string | null {
+  const file = getUmmiFile(surah);
+  if (!file) return null;
+  return `/api/audio/proxy?url=${encodeURIComponent(ummiDownloadUrl(file))}`;
+}
