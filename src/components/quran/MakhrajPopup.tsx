@@ -20,16 +20,17 @@ export function MakhrajPopup({ zone, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-[65] flex items-end justify-center bg-black/40 backdrop-blur-sm"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-label="Diagram Makhraj"
     >
       <div
-        className="w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-5 shadow-xl dark:bg-zinc-900"
+        className="max-h-[80vh] w-full overflow-y-auto rounded-t-3xl bg-white p-5 pb-8 shadow-xl dark:bg-zinc-900"
         onClick={(e) => e.stopPropagation()}
       >
+        <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-zinc-200 dark:bg-zinc-700" />
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold text-slate-900 dark:text-slate-50">
             Makhraj Huruf
@@ -135,6 +136,14 @@ export function MakhrajPopup({ zone, onClose }: Props) {
           </Button>
         </div>
         {show3d && <Makhraj3D activeZoneId={zone?.id} />}
+
+        <button
+          type="button"
+          onClick={onClose}
+          className="mt-4 w-full rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-700"
+        >
+          Tutup
+        </button>
       </div>
     </div>
   );

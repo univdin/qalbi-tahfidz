@@ -24,7 +24,6 @@ import {
   getTajweedData,
   type TajweedRange,
 } from "@/lib/tajweed";
-import { firstArabicChar, getZoneForLetter, type MakhrajZone } from "@/lib/makhraj";
 import { getSurahJuzStart, getSurahPageStart } from "@/data/quranBounds";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -59,7 +58,7 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
     tanzil: Map<number, string>;
   } | null>(null);
   const [showSettings, setShowSettings] = useState(false);
-  const [makhrajZone, setMakhrajZone] = useState<MakhrajZone | null>(null);
+  const [showMakhraj, setShowMakhraj] = useState(false);
   const [detail, setDetail] = useState<VerseDetail | null>(null);
   const [ruleInfo, setRuleInfo] = useState<{ label: string; desc: string } | null>(null);
   const [showLegend, setShowLegend] = useState(false);
@@ -82,8 +81,14 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
     nextAyah,
   } = useAudioStore();
 
-  const openMakhraj = (char: string) => {
-    setMakhrajZone(getZoneForLetter(char));
+  const playAyah = (idx: number) => {
+    setAudioState({
+      isPlaying: true,
+      currentAyahIndex: idx,
+      currentAyahRepeat: 0,
+      isSilenceGap: false,
+      activeSurah: surahNumber,
+    });
   };
 
   useEffect(() => {
@@ -456,7 +461,8 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
           <article
             key={verse.number}
             id={`ayah-${verse.number}`}
-            className={`cv-auto rounded-2xl border p-5 transition-colors ${
+            onClick={() => playAyah(idx)}
+            className={`cv-auto cursor-pointer rounded-2xl border p-5 transition-colors ${
               currentAyahIndex === idx && isPlaying
                 ? "border-emerald-400 bg-emerald-50/60 dark:border-emerald-700 dark:bg-emerald-950/40"
                 : "border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800/60"
@@ -484,7 +490,6 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
                 fontSize="large"
                 scale={fontScale}
                 onRuleInfo={setRuleInfo}
-                onCharClick={openMakhraj}
               />
             ) : (
               <WordMaskingContainer
@@ -494,7 +499,6 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
                 mode={maskingMode}
                 fontSize="large"
                 scale={fontScale}
-                onWordClick={(word) => openMakhraj(firstArabicChar(word))}
               />
             )}
 
@@ -518,7 +522,10 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
               </div>
             )}
 
-            <div className="mt-4 flex flex-wrap items-center gap-2">
+            <div
+              className="mt-4 flex flex-wrap items-center gap-2"
+              onClick={(e) => e.stopPropagation()}
+            >
               <Button
                 size="sm"
                 variant="outline"
@@ -555,6 +562,13 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
               <Button
                 size="sm"
                 variant="outline"
+                onClick={() => setShowMakhraj(true)}
+              >
+                🗣️ Makhraj
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
                 onClick={() =>
                   setDetail({
                     surah: surahNumber,
@@ -572,8 +586,8 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
         ))}
       </div>
 
-      {makhrajZone && (
-        <MakhrajPopup zone={makhrajZone} onClose={() => setMakhrajZone(null)} />
+      {showMakhraj && (
+        <MakhrajPopup zone={null} onClose={() => setShowMakhraj(false)} />
       )}
 
       <AyahDetailSheet detail={detail} onClose={() => setDetail(null)} />

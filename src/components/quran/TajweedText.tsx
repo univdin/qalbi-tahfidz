@@ -28,16 +28,21 @@ function clickable(
   ruleDesc: string | null,
   onCharClick?: (char: string) => void
 ): React.ReactNode {
+  const interactive = onCharClick !== undefined;
   return (
     <span
       key={key}
       className={ruleLabel ? "cursor-help" : "cursor-pointer"}
       title={ruleLabel ? `${ruleLabel} — ${ruleDesc ?? ""}` : undefined}
-      onClick={(e) => {
-        e.stopPropagation();
-        const ch = firstArabicChar(content);
-        if (ch) onCharClick?.(ch);
-      }}
+      onClick={
+        interactive
+          ? (e) => {
+              e.stopPropagation();
+              const ch = firstArabicChar(content);
+              if (ch) onCharClick(ch);
+            }
+          : undefined
+      }
     >
       {content}
     </span>
@@ -78,12 +83,14 @@ export function TajweedText({ text, ranges, fontSize = "large", onCharClick, onR
         className="cursor-help"
         style={{ color: rule?.color ?? "#10b981", fontWeight: 700 }}
         onClick={(e) => {
-          e.stopPropagation();
           if (rule && onRuleInfo) {
             onRuleInfo({ label: rule.label, desc: rule.desc });
-          } else {
+            return;
+          }
+          if (onCharClick) {
+            e.stopPropagation();
             const ch = firstArabicChar(seg);
-            if (ch) onCharClick?.(ch);
+            if (ch) onCharClick(ch);
           }
         }}
       >
