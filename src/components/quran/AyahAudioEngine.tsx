@@ -61,7 +61,7 @@ export const AyahAudioEngine: React.FC<AyahAudioEngineProps> = ({
       });
     };
 
-    audio.addEventListener("ended", () => {
+    const handleEnded = () => {
       const duration = audio.duration || 8;
       const delayMs = (duration * delayRatio * 1000) / playbackRate;
 
@@ -70,12 +70,15 @@ export const AyahAudioEngine: React.FC<AyahAudioEngineProps> = ({
         setAudioState({ isSilenceGap: false });
         incrementAyahRepeat();
       }, delayMs);
-    });
+    };
+
+    audio.addEventListener("ended", handleEnded);
 
     playCurrent();
 
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      audio.removeEventListener("ended", handleEnded);
       audio.pause();
       audio.src = "";
     };

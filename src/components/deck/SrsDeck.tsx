@@ -31,25 +31,25 @@ const CATEGORY_COLOR: Record<HifzCategory, string> = {
 const RATINGS: { grade: Grade; label: string; desc: string; className: string }[] = [
   {
     grade: 1,
-    label: "Again",
+    label: "Ulangi",
     desc: "Lupa — ulangi",
     className: "bg-red-600 hover:bg-red-700",
   },
   {
     grade: 2,
-    label: "Hard",
+    label: "Sulit",
     desc: "Sulit diingat",
     className: "bg-amber-500 hover:bg-amber-600",
   },
   {
     grade: 3,
-    label: "Good",
+    label: "Lancar",
     desc: "Lancar",
     className: "bg-emerald-600 hover:bg-emerald-700",
   },
   {
     grade: 4,
-    label: "Easy",
+    label: "Sangat Mudah",
     desc: "Sangat mudah",
     className: "bg-teal-600 hover:bg-teal-700",
   },
@@ -260,7 +260,11 @@ export const SrsDeck: React.FC = () => {
                       {card.surahNumber}
                     </span>
                     <div>
-                      <p className="font-arabic text-xl font-bold text-slate-900 dark:text-slate-50">
+                      <p
+                        lang="ar"
+                        dir="rtl"
+                        className="font-arabic text-xl font-bold text-slate-900 dark:text-slate-50"
+                      >
                         {meta?.nameArabic}
                       </p>
                       <p className="text-sm text-slate-500 dark:text-slate-400">

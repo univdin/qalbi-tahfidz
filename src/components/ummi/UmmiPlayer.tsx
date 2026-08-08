@@ -142,7 +142,11 @@ export function UmmiPlayer() {
               <p className="text-xs font-bold uppercase tracking-wide text-emerald-600">
                 {currentSurah ? `Surah ${currentSurah}` : "Belum ada surah diputar"}
               </p>
-              <h2 className="truncate font-arabic text-2xl font-bold text-slate-900 dark:text-slate-50">
+              <h2
+                lang="ar"
+                dir="rtl"
+                className="truncate font-arabic text-2xl font-bold text-slate-900 dark:text-slate-50"
+              >
                 {currentMeta?.nameArabic}
               </h2>
               <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -150,16 +154,38 @@ export function UmmiPlayer() {
               </p>
             </div>
             <div className="flex shrink-0 items-center gap-2">
-              <Button size="icon" variant="outline" onClick={goPrev} aria-label="Surah sebelumnya">
+              <Button
+                size="icon"
+                variant="outline"
+                onClick={goPrev}
+                aria-label="Surah sebelumnya"
+                className="min-h-12 min-w-12"
+              >
                 ⏮
               </Button>
-              <Button onClick={togglePlay} disabled={!src || isLoading} className="w-24">
+              <Button
+                onClick={togglePlay}
+                disabled={!src || isLoading}
+                className="min-h-12 w-24"
+              >
                 {isLoading ? "Memuat…" : isPlaying ? "⏸ Jeda" : "▶ Putar"}
               </Button>
-              <Button size="icon" variant="outline" onClick={goNext} aria-label="Surah berikutnya">
+              <Button
+                size="icon"
+                variant="outline"
+                onClick={goNext}
+                aria-label="Surah berikutnya"
+                className="min-h-12 min-w-12"
+              >
                 ⏭
               </Button>
-              <Button size="icon" variant="ghost" onClick={stop} aria-label="Berhenti">
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={stop}
+                aria-label="Berhenti"
+                className="min-h-12 min-w-12"
+              >
                 ⏹
               </Button>
             </div>
@@ -322,7 +348,11 @@ export function UmmiPlayer() {
                 {active && isPlaying ? "▶" : entry.surah}
               </span>
               <div className="min-w-0">
-                <p className="truncate font-arabic text-lg font-bold text-slate-900 dark:text-slate-50">
+                <p
+                  lang="ar"
+                  dir="rtl"
+                  className="truncate font-arabic text-lg font-bold text-slate-900 dark:text-slate-50"
+                >
                   {meta?.nameArabic}
                 </p>
                 <p className="truncate text-xs text-slate-500 dark:text-slate-400">

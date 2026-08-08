@@ -186,7 +186,11 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
               {surahNumber}
             </span>
             <div>
-              <h1 className="font-arabic text-3xl font-bold text-slate-900 dark:text-slate-50">
+              <h1
+                lang="ar"
+                dir="rtl"
+                className="font-arabic text-3xl font-bold text-slate-900 dark:text-slate-50"
+              >
                 {surahMeta?.nameArabic}
               </h1>
               <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -335,7 +339,7 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
           <article
             key={verse.number}
             id={`ayah-${verse.number}`}
-            className={`rounded-2xl border p-5 transition-colors ${
+            className={`cv-auto rounded-2xl border p-5 transition-colors ${
               currentAyahIndex === idx && isPlaying
                 ? "border-emerald-400 bg-emerald-50/60 dark:border-emerald-700 dark:bg-emerald-950/40"
                 : "border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800/60"

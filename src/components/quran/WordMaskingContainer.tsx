@@ -49,6 +49,7 @@ export const WordMaskingContainer: React.FC<Props> = ({
   return (
     <div
       dir="rtl"
+      lang="ar"
       className={`flex flex-wrap gap-3 ${fontFamily} ${fontClasses}`}
       role="group"
       aria-label="Teks ayat dengan mode masking"

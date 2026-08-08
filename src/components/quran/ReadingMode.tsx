@@ -71,7 +71,11 @@ export function ReadingMode({ ranges }: Props) {
           <section key={ri} className="flex flex-col gap-3">
             <header className="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <p className="font-arabic text-2xl font-bold text-slate-900 dark:text-slate-50">
+                <p
+                  dir="rtl"
+                  lang="ar"
+                  className="font-arabic text-2xl font-bold text-slate-900 dark:text-slate-50"
+                >
                   {meta?.nameArabic}
                 </p>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -89,7 +93,7 @@ export function ReadingMode({ ranges }: Props) {
               <div
                 key={v.number}
                 id={`ayah-${v.number}`}
-                className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800/60"
+                className="cv-auto rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800/60"
               >
                 <div className="mb-2 flex items-center justify-between">
                   <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-600 dark:bg-slate-700 dark:text-slate-200">
@@ -106,6 +110,7 @@ export function ReadingMode({ ranges }: Props) {
                 </div>
                 <p
                   dir="rtl"
+                  lang="ar"
                   className="font-arabic text-3xl leading-loose text-slate-900 dark:text-slate-50"
                 >
                   {v.textArabicUthmani}

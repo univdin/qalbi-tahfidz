@@ -36,7 +36,11 @@ export function DiffViewer({ aText, bText, aLabel, bLabel }: Props) {
         <span className="text-xs font-bold uppercase tracking-wide text-emerald-600">
           {aLabel}
         </span>
-        <p dir="rtl" className="font-arabic text-2xl leading-loose">
+        <p
+          lang="ar"
+          dir="rtl"
+          className="font-arabic text-2xl leading-loose"
+        >
           {renderTokens(diff.a, "onlyA")}
         </p>
       </div>
@@ -44,7 +48,11 @@ export function DiffViewer({ aText, bText, aLabel, bLabel }: Props) {
         <span className="text-xs font-bold uppercase tracking-wide text-emerald-600">
           {bLabel}
         </span>
-        <p dir="rtl" className="font-arabic text-2xl leading-loose">
+        <p
+          lang="ar"
+          dir="rtl"
+          className="font-arabic text-2xl leading-loose"
+        >
           {renderTokens(diff.b, "onlyB")}
         </p>
       </div>

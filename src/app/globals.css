@@ -130,3 +130,10 @@
     @apply font-sans;
   }
 }
+@layer utilities {
+  /* Content-visibility untuk daftar panjang (hemat render off-screen) */
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 220px;
+  }
+}

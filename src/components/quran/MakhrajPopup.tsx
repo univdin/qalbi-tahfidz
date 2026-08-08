@@ -108,7 +108,11 @@ export function MakhrajPopup({ zone, onClose }: Props) {
 
         {zone && (
           <div className="mt-4 rounded-xl border border-slate-200 p-4 dark:border-slate-700">
-            <p className="font-arabic text-2xl font-bold text-slate-900 dark:text-slate-50">
+            <p
+              lang="ar"
+              dir="rtl"
+              className="font-arabic text-2xl font-bold text-slate-900 dark:text-slate-50"
+            >
               {zone.nameAr}
             </p>
             <p className="text-sm font-bold text-emerald-600">{zone.name}</p>

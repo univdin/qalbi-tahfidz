@@ -101,6 +101,7 @@ export function TajweedText({ text, ranges, fontSize = "large", onCharClick }: P
   return (
     <div
       dir="rtl"
+      lang="ar"
       className={`font-arabic ${FONT_CLASSES[fontSize]}`}
       role="note"
       aria-label="Teks ayat dengan penanda tajwid berwarna"

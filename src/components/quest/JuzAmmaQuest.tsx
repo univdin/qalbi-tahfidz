@@ -91,7 +91,11 @@ export function JuzAmmaQuest() {
                     {quest.seq}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="font-arabic text-lg font-bold text-slate-900 dark:text-slate-50">
+                    <p
+                      lang="ar"
+                      dir="rtl"
+                      className="font-arabic text-lg font-bold text-slate-900 dark:text-slate-50"
+                    >
                       {meta?.nameArabic}
                     </p>
                     <p className="truncate text-xs text-slate-500 dark:text-slate-400">

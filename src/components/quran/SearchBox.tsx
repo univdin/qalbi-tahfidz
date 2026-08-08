@@ -92,7 +92,11 @@ export function SearchBox() {
                 <p className="text-xs font-semibold text-emerald-600">
                   {r.sura_name_romanization} ({r.sura_name}) · Ayat {r.aya_id_display}
                 </p>
-                <p className="font-arabic text-xl leading-relaxed text-slate-900 dark:text-slate-50">
+                <p
+                  lang="ar"
+                  dir="rtl"
+                  className="font-arabic text-xl leading-relaxed text-slate-900 dark:text-slate-50"
+                >
                   {r.uthmani}
                 </p>
               </CardContent>
