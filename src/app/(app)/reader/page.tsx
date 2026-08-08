@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { ResumeReading } from "@/components/quran/ResumeReading";
 import { Card, CardContent } from "@/components/ui/card";
 import { absoluteUrl, SITE_URL } from "@/lib/site";
 import { SURAHS } from "@/lib/surahs";
@@ -101,6 +102,9 @@ export default function ReaderIndexPage() {
           <Link href="/halaman" className="font-semibold text-emerald-600 hover:underline">
             Halaman
           </Link>
+        </div>
+        <div className="mt-4">
+          <ResumeReading />
         </div>
       </div>
 

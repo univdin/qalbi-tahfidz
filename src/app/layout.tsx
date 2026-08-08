@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { ThemeProvider } from "next-themes";
 import { Geist, Geist_Mono, Amiri, Scheherazade_New } from "next/font/google";
 import { AuthCallbackHandler } from "@/components/auth/AuthCallbackHandler";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -133,10 +134,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`${geistSans.variable} ${geistMono.variable} ${amiri.variable} ${scheherazade.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <AuthCallbackHandler />
-        <JsonLd data={jsonLdWebSite} />
-        <JsonLd data={jsonLdOrganization} />
-        {children}
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <AuthCallbackHandler />
+          <JsonLd data={jsonLdWebSite} />
+          <JsonLd data={jsonLdOrganization} />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

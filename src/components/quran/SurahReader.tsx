@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { fetchDynamicSurah, type DynamicSurahData } from "@/services/quranDataService";
 import { useAudioStore } from "@/store/useAudioStore";
@@ -15,6 +15,8 @@ import { TajweedLegend } from "@/components/quran/TajweedLegend";
 import { MakhrajPopup } from "@/components/quran/MakhrajPopup";
 import { AyahAudioEngine } from "@/components/quran/AyahAudioEngine";
 import { RecitationRecorder } from "@/components/quran/RecitationRecorder";
+import { BookmarkButton } from "@/components/quran/BookmarkButton";
+import { useLastRead } from "@/hooks/useLastRead";
 import {
   fetchTanzilUthmani,
   getSurahTajweed,
@@ -55,10 +57,19 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
     tanzil: Map<number, string>;
   } | null>(null);
   const [makhrajZone, setMakhrajZone] = useState<MakhrajZone | null>(null);
+  const { saveLastRead } = useLastRead();
+  const savedReadRef = useRef<number | null>(null);
 
   const openMakhraj = (char: string) => {
     setMakhrajZone(getZoneForLetter(char));
   };
+
+  useEffect(() => {
+    if (isLoaded && savedReadRef.current !== surahNumber) {
+      savedReadRef.current = surahNumber;
+      void saveLastRead(surahNumber, 1);
+    }
+  }, [isLoaded, surahNumber, saveLastRead]);
 
   const {
     isPlaying,
@@ -438,6 +449,7 @@ export const SurahReader: React.FC<SurahReaderProps> = ({ surahNumber }) => {
                   verse.number
                 )}
               />
+              <BookmarkButton surah={surahNumber} ayah={verse.number} />
             </div>
           </article>
         ))}

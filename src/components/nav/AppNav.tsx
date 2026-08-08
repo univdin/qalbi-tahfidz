@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { supabase } from "@/core/supabase/client";
 import { useSession } from "@/hooks/useSession";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
@@ -58,23 +59,26 @@ export function AppNav() {
             </Link>
           ))}
         </div>
-        {user ? (
-          <button
-            type="button"
-            onClick={handleSignOut}
-            disabled={signingOut}
-            className="rounded-md px-3 py-1.5 text-sm font-medium text-zinc-500 transition-colors hover:text-red-600 dark:text-zinc-400 dark:hover:text-red-400"
-          >
-            {signingOut ? "Keluar..." : "Keluar"}
-          </button>
-        ) : (
-          <Link
-            href="/auth/login"
-            className="rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
-          >
-            Masuk
-          </Link>
-        )}
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          {user ? (
+            <button
+              type="button"
+              onClick={handleSignOut}
+              disabled={signingOut}
+              className="rounded-md px-3 py-1.5 text-sm font-medium text-zinc-500 transition-colors hover:text-red-600 dark:text-zinc-400 dark:hover:text-red-400"
+            >
+              {signingOut ? "Keluar..." : "Keluar"}
+            </button>
+          ) : (
+            <Link
+              href="/auth/login"
+              className="rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
+            >
+              Masuk
+            </Link>
+          )}
+        </div>
       </nav>
       <nav className="flex gap-1 overflow-x-auto px-4 pb-2 sm:hidden">
         {NAV_ITEMS.map((item) => (

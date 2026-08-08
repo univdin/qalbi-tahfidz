@@ -41,7 +41,10 @@ export default function KisahPage() {
         </h1>
         <p className="text-sm text-slate-500 dark:text-slate-400">
           Peta interaktif kisah para nabi &amp; kisah pilihan — pilih kisah, ikuti
-          alur peristiwa, dan lompat langsung ke ayat rujukannya.
+          alur peristiwa, dan lompat langsung ke ayat rujukannya.{" "}
+          <a href="/akhlak" className="font-semibold text-emerald-600 hover:underline">
+            Jelajahi juga nilai akhlaknya →
+          </a>
         </p>
       </div>
       <StoryExplorer />

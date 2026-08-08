@@ -50,6 +50,7 @@ Akses cepat: ${SITE_URL}
 - [Baca per Juz](/juz) & [per Halaman](/halaman) — mode baca mushaf.
 - [Artikel & Amalan](/artikel) — keutamaan amalan & ayat pilihan (Ayat Kursi, Seribu Dinar, dll).
 - [Amalan Rutin](/amalan) — Yasin & Tahlil, Al-Kahfi, Al-Waqi'ah, Al-Mulk.
+- [Nilai Akhlak](/akhlak) — ayat pilihan berdasarkan nilai karakter.
 - [Masuk](/auth/login) & [Daftar](/auth/signup) — akun orang tua/guru/anak.
 
 ## Surah (114)
